@@ -2,68 +2,58 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ---------------------------------------------------------------
-   Barlow Semi Condensed — self-hosted brand display face
-   --------------------------------------------------------------- */
-@font-face {
-  font-family: 'Barlow Semi Condensed';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/BarlowSemiCondensed-Regular.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Barlow Semi Condensed';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/BarlowSemiCondensed-Medium.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Barlow Semi Condensed';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('/fonts/BarlowSemiCondensed-SemiBold.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Barlow Semi Condensed';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/BarlowSemiCondensed-Bold.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Barlow Semi Condensed';
-  font-style: normal;
-  font-weight: 800;
-  font-display: swap;
-  src: url('/fonts/BarlowSemiCondensed-ExtraBold.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Barlow Semi Condensed';
-  font-style: normal;
-  font-weight: 900;
-  font-display: swap;
-  src: url('/fonts/BarlowSemiCondensed-Black.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Barlow Semi Condensed';
-  font-style: italic;
-  font-weight: 900;
-  font-display: swap;
-  src: url('/fonts/BarlowSemiCondensed-BlackItalic.ttf') format('truetype');
-}
+/* ===============================================================
+   LinkedIn AI — deep-space / premium-tech design system
+   Fonts (Space Grotesk + Space Mono) are loaded via Google Fonts
+   in index.html.
+   =============================================================== */
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: #0C1929;
-  color: #FBF7EC;
+  font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  background: #0a1c46;
+  color: #ffffff;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-::selection { background: #EFE183; color: #0C1929; }
+::selection { background: #e8458a; color: #ffffff; }
+
+/* ── Signature headline gradient (apply to the one emphasis phrase) ── */
+.grad-text {
+  background: linear-gradient(96deg, #2f8fff 0%, #e8458a 52%, #f6831f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ── Brand gradient pill button (primary CTA) ── */
+.btn-grad {
+  background: linear-gradient(135deg, #e8458a, #f6831f);
+  color: #fff;
+  box-shadow: 0 2px 14px rgba(10, 15, 30, 0.18);
+  transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+}
+.btn-grad:hover { transform: translateY(-1px); filter: brightness(1.06); box-shadow: 0 12px 32px rgba(8, 12, 28, 0.28); }
+.btn-grad:active { transform: translateY(0); filter: brightness(0.98); }
+
+/* ── Decorative layers (blooms, flare). pointer-events disabled. ── */
+.bloom { position: absolute; border-radius: 50%; pointer-events: none; }
+.beam-h {
+  position: absolute; height: 8px; pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(212, 232, 255, 0.85) 50%, transparent);
+  filter: blur(3px);
+}
+.beam-v {
+  position: absolute; width: 8px; pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgba(212, 232, 255, 0.8) 50%, transparent);
+  filter: blur(3px);
+}
+
+@keyframes spark-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+.spark-pulse { animation: spark-pulse 3.2s ease-in-out infinite; }

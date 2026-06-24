@@ -9,6 +9,71 @@ const CART_CLOSE_DATE = new Date('2026-06-01T03:59:00Z')
 
 const trackCTA = (location: string) => Fathom.trackEvent(`CTA: ${location}`)
 
+/* ─── Signature navy surface gradients ─── */
+const GRAD_NAVY_HERO = 'linear-gradient(118deg, #050f26 0%, #0a1c46 54%, #0c2152 100%)'
+const GRAD_NAVY_BANNER = 'linear-gradient(112deg, #06112a 0%, #0a1c46 56%, #0c2152 100%)'
+const GRAD_CHIP = 'linear-gradient(135deg, #e8458a, #f6831f)'
+
+/* Per-module two-stop gradient families (icon tiles, accents) */
+const MODULE_GRADS = [
+  'linear-gradient(140deg, #e23b4e, #18a86b)', // 1 · Niche Positioning
+  'linear-gradient(140deg, #2456e6, #7a36e0)', // 2 · Content Strategy
+  'linear-gradient(140deg, #8a3ce0, #e8458a)', // 3 · Content Formats
+  'linear-gradient(140deg, #2f6fe8, #f6a01f)', // 4 · Grow Your List
+  'linear-gradient(140deg, #e8458a, #f6b01f)', // 5 · Get Paid To Write
+  'linear-gradient(140deg, #16a0d2, #2f6fe8)', // 6 · Profile Secrets
+]
+
+/* ─── Decorative: color bloom (soft radial bleeding off the edge) ─── */
+function Bloom({ color, size, style }: { color: string; size: number; style?: React.CSSProperties }) {
+  return (
+    <div
+      aria-hidden="true"
+      className="bloom"
+      style={{ width: size, height: size, background: `radial-gradient(circle, ${color} 0%, transparent 62%)`, ...style }}
+    />
+  )
+}
+
+/* ─── Decorative: signature starburst lens flare (glowing core + crossed beams) ─── */
+function Flare({ scale = 1, style }: { scale?: number; style?: React.CSSProperties }) {
+  return (
+    <div aria-hidden="true" className="absolute pointer-events-none" style={style}>
+      <div
+        className="bloom"
+        style={{
+          left: '50%', top: '50%', transform: 'translate(-50%,-50%)',
+          width: 480 * scale, height: 480 * scale,
+          background: 'radial-gradient(circle, rgba(180,214,255,0.5) 0%, rgba(180,214,255,0) 60%)',
+          filter: 'blur(8px)',
+        }}
+      />
+      <div className="beam-h" style={{ left: '50%', top: '50%', transform: 'translate(-50%,-50%)', width: 620 * scale }} />
+      <div className="beam-v" style={{ left: '50%', top: '50%', transform: 'translate(-50%,-50%)', height: 560 * scale }} />
+    </div>
+  )
+}
+
+/* ─── Decorative: vignette to darken edges + focus content ─── */
+function Vignette({ at = '16% 50%' }: { at?: string }) {
+  return (
+    <div
+      aria-hidden="true"
+      className="absolute inset-0 pointer-events-none"
+      style={{ background: `radial-gradient(130% 150% at ${at}, transparent 38%, rgba(2,6,18,0.6))` }}
+    />
+  )
+}
+
+/* ─── LinkedIn AI four-point spark glyph ─── */
+function Spark({ className = '', style }: { className?: string; style?: React.CSSProperties }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} style={style} aria-hidden="true">
+      <path fill="currentColor" d="M12 2 C12.6 7.5 16.5 11.4 22 12 C16.5 12.6 12.6 16.5 12 22 C11.4 16.5 7.5 12.6 2 12 C7.5 11.4 11.4 7.5 12 2 Z" />
+    </svg>
+  )
+}
+
 /* ─── Fade-up on scroll ─── */
 function FadeIn({ children, className = '', delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -32,10 +97,10 @@ function FadeIn({ children, className = '', delay = 0 }: { children: React.React
   )
 }
 
-/* ─── Eyebrow ─── */
+/* ─── Eyebrow / kicker (Space Mono, uppercase, wide tracking, accent) ─── */
 function Eyebrow({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
-    <p className={`font-sans text-[12px] font-bold uppercase tracking-caps text-butter-500 ${className}`}>
+    <p className={`font-mono text-[12px] md:text-[13px] font-bold uppercase tracking-caps text-butter-500 ${className}`}>
       {children}
     </p>
   )
@@ -62,7 +127,7 @@ function Display({
     s: 'text-[clamp(28px,4vw,48px)]',
   }[size]
   return (
-    <Tag className={`font-display font-black uppercase leading-display tracking-display ${sizeClass} ${className}`} style={style}>
+    <Tag className={`font-display font-bold leading-display tracking-display [text-wrap:balance] ${sizeClass} ${className}`} style={style}>
       {children}
     </Tag>
   )
@@ -89,10 +154,10 @@ function PrimaryCTA({
       ref={onRef}
       href={href}
       onClick={() => track && trackCTA(track)}
-      className={`inline-block font-sans font-bold uppercase bg-butter-500 text-ink-900 rounded-[3px] transition-colors duration-150 hover:bg-butter-400 active:bg-butter-600 ${
+      className={`btn-grad inline-block font-mono font-bold uppercase text-white rounded-full ${
         big
-          ? 'px-9 py-5 text-[16px] tracking-[0.08em] shadow-hard'
-          : 'px-6 py-3.5 text-[13px] tracking-[0.08em] shadow-hard-sm'
+          ? 'px-9 py-5 text-[15px] tracking-[0.04em]'
+          : 'px-6 py-3.5 text-[13px] tracking-[0.04em]'
       } ${className}`}
     >
       {children}
@@ -139,7 +204,7 @@ function CountdownTimer({ targetDate, compact, onLight }: { targetDate: Date; co
     <div className="inline-flex gap-3">
       {units.map((u) => (
         <div key={u.label} className="flex flex-col items-center">
-          <span className="font-display font-black text-[28px] leading-none rounded-[2px] px-3 py-2 min-w-[52px] text-center tabular-nums bg-butter-500 text-ink-900">
+          <span className="font-display font-bold text-[28px] leading-none rounded-[10px] px-3 py-2 min-w-[52px] text-center tabular-nums bg-ink-800 border border-ink-700 text-white">
             {String(u.value).padStart(2, '0')}
           </span>
           <span className={`font-sans text-[10px] font-bold uppercase tracking-caps mt-1.5 ${onLight ? 'text-ink-900/60' : 'text-ink-300'}`}>{u.label}</span>
@@ -155,26 +220,21 @@ function CountdownTimer({ targetDate, compact, onLight }: { targetDate: Date; co
    ═══════════════════════════════════════════════════════════ */
 function Hero({ ctaRef }: { ctaRef: React.RefObject<HTMLAnchorElement | null> }) {
   return (
-    <section id="top" className="relative bg-ink-900 overflow-hidden flex flex-col min-h-screen">
-      {/* Book-pattern texture */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage: "url('/images/sps/book-pattern.svg')",
-          backgroundSize: '600px',
-          backgroundRepeat: 'repeat',
-          backgroundPosition: 'center',
-          opacity: 0.35,
-          maskImage: 'linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 100%)',
-          WebkitMaskImage: 'linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 100%)',
-        }}
-      />
+    <section id="top" className="relative overflow-hidden flex flex-col min-h-screen" style={{ background: GRAD_NAVY_HERO }}>
+      {/* Signature decoration — colorful blooms + starburst flare + vignette */}
+      <div aria-hidden="true" className="absolute inset-0 overflow-hidden pointer-events-none">
+        <Bloom color="rgba(232,69,138,0.45)" size={760} style={{ right: '-180px', top: '-260px' }} />
+        <Bloom color="rgba(246,131,31,0.40)" size={560} style={{ right: '60px', top: '40px' }} />
+        <Bloom color="rgba(47,143,255,0.42)" size={620} style={{ right: '-80px', top: '220px' }} />
+        <Bloom color="rgba(122,54,224,0.30)" size={560} style={{ left: '-220px', top: '-160px' }} />
+        <Vignette at="14% 46%" />
+        <Flare scale={0.9} style={{ right: '120px', top: '180px', width: 1, height: 1 }} />
+      </div>
 
       {/* Top announcement pill */}
       <div className="relative flex justify-center pt-5 md:pt-6 pb-1 px-3 flex-shrink-0 z-10">
-        <div className="inline-flex items-center gap-2 border border-ink-600 rounded-full px-4 md:px-5 py-1.5 bg-ink-900/60">
-          <span className="w-2 h-2 rounded-full bg-butter-500 animate-pulse flex-shrink-0" />
+        <div className="inline-flex items-center gap-2 border border-ink-700 rounded-full px-4 md:px-5 py-1.5 bg-ink-900/50 backdrop-blur-sm">
+          <span className="w-2 h-2 rounded-full animate-pulse flex-shrink-0" style={{ background: GRAD_CHIP }} />
           <span className="font-sans text-[10px] md:text-[11px] text-paper-200 uppercase tracking-caps whitespace-nowrap">
             Live Bootcamp Begins Monday, June 1, 2026
           </span>
@@ -186,16 +246,16 @@ function Hero({ ctaRef }: { ctaRef: React.RefObject<HTMLAnchorElement | null> })
         <div className="max-w-container mx-auto w-full px-5 md:px-8 py-6 md:py-8 grid lg:grid-cols-[1.4fr_1fr] gap-10 lg:gap-14 items-center">
           {/* Left — eyebrow + headline + subhead + CTA + countdown */}
           <div className="max-w-[680px] mx-auto lg:mx-0 text-center lg:text-left">
-            <p className="font-sans font-bold uppercase tracking-caps text-butter-500 mb-4 md:mb-5" style={{ fontSize: 'clamp(11px, 0.95vw, 14px)' }}>
+            <p className="font-mono font-bold uppercase tracking-caps text-butter-500 mb-4 md:mb-5" style={{ fontSize: 'clamp(11px, 0.95vw, 14px)' }}>
               Self-Publishing Studio LIVE
             </p>
             <h1
-              className="font-display font-black uppercase text-paper-100 tracking-display mb-5"
+              className="font-display font-bold text-white tracking-display [text-wrap:balance] mb-5"
               style={{ fontSize: 'clamp(40px, 4.8vw, 72px)', lineHeight: 0.98 }}
             >
               How To Write Your<br />
               First (Or Next)<br />
-              <span className="text-butter-500">Non-Fiction Book</span><br />
+              <span className="grad-text">Non-Fiction Book</span><br />
               In 14 Days
             </h1>
             <p
@@ -209,50 +269,50 @@ function Hero({ ctaRef }: { ctaRef: React.RefObject<HTMLAnchorElement | null> })
               ref={ctaRef}
               href={DEFAULT_CTA_URL}
               onClick={() => trackCTA('Hero')}
-              className="block w-full sm:max-w-[520px] text-center mx-auto lg:mx-0 bg-butter-500 text-ink-900 font-sans font-bold uppercase tracking-[0.08em] rounded-[3px] shadow-hard hover:bg-butter-400 active:bg-butter-600 transition-colors"
+              className="btn-grad block w-full sm:max-w-[520px] text-center mx-auto lg:mx-0 text-white font-mono font-bold uppercase tracking-[0.04em] rounded-full"
               style={{ padding: '20px 28px', fontSize: 'clamp(13px, 1.1vw, 16px)' }}
             >
               Join Self-Publishing Studio LIVE
             </a>
-            <p className="font-sans text-[10px] uppercase tracking-caps text-ink-300 mt-5 mb-2.5">Cart closes in</p>
+            <p className="font-mono text-[10px] uppercase tracking-caps text-ink-300 mt-5 mb-2.5">Cart closes in</p>
             <CountdownTimer targetDate={CART_CLOSE_DATE} />
           </div>
 
           {/* Right — overlapping captain circles + small book-icon accent */}
           <div className="hidden md:flex justify-center lg:justify-end items-center">
             <div className="relative w-[320px] h-[380px] lg:w-[420px] lg:h-[440px]">
-              {/* Small book-icon decoration — upper area, butter background */}
+              {/* Small spark chip — upper area, brand gradient */}
               <div className="absolute left-[70px] top-0 z-30 lg:left-[100px]">
                 <div
-                  className="w-[72px] h-[72px] lg:w-[88px] lg:h-[88px] rounded-full flex items-center justify-center border-4 border-ink-900"
-                  style={{ backgroundColor: '#EFE183', boxShadow: '0 8px 16px rgba(0,0,0,0.35)' }}
+                  className="w-[72px] h-[72px] lg:w-[88px] lg:h-[88px] rounded-full flex items-center justify-center spark-pulse"
+                  style={{ background: GRAD_CHIP, boxShadow: '0 0 28px rgba(232,69,138,0.5)' }}
                 >
-                  <span className="text-[36px] lg:text-[44px] leading-none" aria-hidden="true" role="img">📖</span>
+                  <Spark className="w-[44%] h-[44%] text-white" style={{ filter: 'drop-shadow(0 0 8px rgba(180,214,255,0.6))' }} />
                 </div>
               </div>
 
-              {/* Dickie Bush — top-right, forest bg, behind */}
+              {/* Dickie Bush — top-right, behind */}
               <div className="absolute right-0 top-0 z-10 flex flex-col items-center">
                 <div
-                  className="w-[170px] h-[170px] lg:w-[210px] lg:h-[210px] rounded-full overflow-hidden border-4 border-ink-900"
-                  style={{ backgroundColor: '#4A7C59' }}
+                  className="w-[170px] h-[170px] lg:w-[210px] lg:h-[210px] rounded-full overflow-hidden border border-white/15"
+                  style={{ backgroundColor: '#0c2152', boxShadow: '0 16px 48px rgba(2,6,18,0.5)' }}
                 >
                   <img src="/images/sps/dickie-circle.png" alt="Dickie Bush" className="w-full h-full object-cover object-top" />
                 </div>
-                <p className="font-display font-black uppercase text-paper-100 mt-2.5 text-[16px] lg:text-[18px] tracking-caps-lg">Dickie Bush</p>
-                <p className="font-sans text-[10px] font-bold uppercase tracking-caps text-ink-300 mt-1 text-center">Co-Founder,<br />Ship 30 for 30</p>
+                <p className="font-display font-bold text-white mt-2.5 text-[16px] lg:text-[18px] tracking-caps-lg">Dickie Bush</p>
+                <p className="font-mono text-[10px] font-bold uppercase tracking-caps text-ink-300 mt-1 text-center">Co-Founder,<br />Ship 30 for 30</p>
               </div>
 
-              {/* Nicolas Cole — bottom-left, rust bg, in front (overlaps Dickie) */}
+              {/* Nicolas Cole — bottom-left, in front (overlaps Dickie) */}
               <div className="absolute left-0 bottom-0 z-20 flex flex-col items-center">
                 <div
-                  className="w-[210px] h-[210px] lg:w-[260px] lg:h-[260px] rounded-full overflow-hidden border-4 border-ink-900"
-                  style={{ backgroundColor: '#B8633A' }}
+                  className="w-[210px] h-[210px] lg:w-[260px] lg:h-[260px] rounded-full overflow-hidden border border-white/15"
+                  style={{ backgroundColor: '#0c2152', boxShadow: '0 24px 64px rgba(2,6,18,0.55)' }}
                 >
                   <img src="/images/sps/cole-circle.png" alt="Nicolas Cole" className="w-full h-full object-cover object-top" />
                 </div>
-                <p className="font-display font-black uppercase text-paper-100 mt-2.5 text-[16px] lg:text-[18px] tracking-caps-lg">Nicolas Cole</p>
-                <p className="font-sans text-[10px] font-bold uppercase tracking-caps text-ink-300 mt-1 text-center">Co-Founder,<br />Premium Ghostwriting Academy</p>
+                <p className="font-display font-bold text-white mt-2.5 text-[16px] lg:text-[18px] tracking-caps-lg">Nicolas Cole</p>
+                <p className="font-mono text-[10px] font-bold uppercase tracking-caps text-ink-300 mt-1 text-center">Co-Founder,<br />Premium Ghostwriting Academy</p>
               </div>
             </div>
           </div>
@@ -284,21 +344,28 @@ function WhyWriteABook() {
     },
   ]
 
+  const blooms = ['rgba(226,59,78,0.5)', 'rgba(47,143,255,0.5)', 'rgba(232,69,138,0.5)']
+
   return (
-    <section className="bg-paper-100 py-20 md:py-28 px-5 md:px-8">
+    <section className="bg-paper py-20 md:py-28 px-5 md:px-8" style={{ color: '#15161a' }}>
       <div className="max-w-container mx-auto">
         <Eyebrow className="text-rust-500 mb-3">The opportunity</Eyebrow>
-        <Display size="m" className="text-ink-900 mb-12 max-w-[920px]">
+        <Display size="m" className="mb-12 max-w-[920px]" style={{ color: '#15161a' }}>
           Why Write A Book?<br />
-          <span className="text-rust-500">And Why Now?</span>
+          <span className="grad-text">And Why Now?</span>
         </Display>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {reasons.map((r) => (
-            <div key={r.num} className="bg-paper-200 border border-paper-300 rounded-[4px] p-7 md:p-8 flex flex-col">
-              <p className="font-display font-black text-[clamp(40px,4.5vw,60px)] leading-none text-rust-500 mb-4">{r.num}</p>
-              <Display size="s" as="h3" className="text-ink-900 mb-3" style={{ fontSize: 'clamp(22px, 2.4vw, 30px)' }}>{r.title}</Display>
-              <p className="font-serif text-[16px] leading-[1.55] text-ink-700">{r.body}</p>
+          {reasons.map((r, i) => (
+            <div
+              key={r.num}
+              className="relative overflow-hidden rounded-[16px] p-7 md:p-8 flex flex-col shadow-float"
+              style={{ background: GRAD_NAVY_BANNER }}
+            >
+              <Bloom color={blooms[i]} size={320} style={{ right: '-120px', top: '-120px' }} />
+              <p className="grad-text font-display font-bold text-[clamp(40px,4.5vw,60px)] leading-none mb-4 relative z-10">{r.num}</p>
+              <Display size="s" as="h3" className="text-white mb-3 relative z-10" style={{ fontSize: 'clamp(22px, 2.4vw, 30px)' }}>{r.title}</Display>
+              <p className="font-serif text-[16px] leading-[1.55] text-ink-200 relative z-10">{r.body}</p>
             </div>
           ))}
         </div>
@@ -321,14 +388,16 @@ function Stats() {
   ]
 
   return (
-    <section className="bg-ink-900 py-20 md:py-28 px-5 md:px-8 border-t border-ink-700">
-      <div className="max-w-container mx-auto">
-        {/* Centered headline with small rust accent line */}
+    <section className="relative overflow-hidden bg-ink-900 py-20 md:py-28 px-5 md:px-8 border-t border-ink-700">
+      <Bloom color="rgba(47,143,255,0.28)" size={640} style={{ left: '-220px', top: '40px' }} />
+      <Bloom color="rgba(232,69,138,0.24)" size={560} style={{ right: '-200px', bottom: '0px' }} />
+      <div className="relative max-w-container mx-auto">
+        {/* Centered headline with gradient accent line */}
         <div className="flex flex-col items-center mb-14">
-          <div className="w-16 h-[3px] bg-rust-500 mb-7" />
-          <Display size="m" className="text-paper-100 text-center" style={{ fontSize: 'clamp(28px, 4.2vw, 56px)' }}>
+          <div className="w-16 h-[3px] mb-7 rounded-full" style={{ background: GRAD_CHIP }} />
+          <Display size="m" className="text-white text-center" style={{ fontSize: 'clamp(28px, 4.2vw, 56px)' }}>
             What Is Self-Publishing<br />
-            <span className="text-butter-500">Studio LIVE?</span>
+            <span className="grad-text">Studio LIVE?</span>
           </Display>
         </div>
 
@@ -347,9 +416,9 @@ function Stats() {
           {/* Right — 2x3 stat cards */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
             {stats.map((s) => (
-              <div key={s.label} className="bg-ink-800 border border-ink-700 rounded-[4px] p-5 md:p-6 flex flex-col">
-                <p className="font-display font-black text-rust-500 leading-none mb-3" style={{ fontSize: 'clamp(36px, 3.8vw, 52px)' }}>{s.num}</p>
-                <p className="font-sans text-[12px] font-bold uppercase tracking-caps text-paper-100 mb-2 leading-tight">{s.label}</p>
+              <div key={s.label} className="bg-ink-800 border border-ink-700 rounded-[16px] p-5 md:p-6 flex flex-col transition-shadow hover:shadow-glow">
+                <p className="grad-text font-display font-bold leading-none mb-3" style={{ fontSize: 'clamp(36px, 3.8vw, 52px)' }}>{s.num}</p>
+                <p className="font-mono text-[12px] font-bold uppercase tracking-caps text-white mb-2 leading-tight">{s.label}</p>
                 <p className="font-serif text-[13px] md:text-[14px] leading-[1.5] text-ink-200">{s.desc}</p>
               </div>
             ))}
@@ -361,7 +430,7 @@ function Stats() {
           <a
             href={DEFAULT_CTA_URL}
             onClick={() => trackCTA('Stats')}
-            className="inline-block bg-butter-500 text-ink-900 font-sans font-bold uppercase tracking-[0.08em] rounded-[3px] shadow-hard hover:bg-butter-400 transition-colors"
+            className="btn-grad inline-block text-white font-mono font-bold uppercase tracking-[0.04em] rounded-full"
             style={{ padding: '20px 36px', fontSize: 'clamp(13px, 1vw, 15px)' }}
           >
             Join Self-Publishing Studio LIVE
@@ -402,28 +471,29 @@ function IsThisForYou() {
   const [open, setOpen] = useState<number | null>(null)
 
   return (
-    <section className="bg-ink-900 py-20 md:py-28 px-5 md:px-8">
-      <div className="max-w-narrow mx-auto">
+    <section className="relative overflow-hidden bg-ink-900 py-20 md:py-28 px-5 md:px-8">
+      <Bloom color="rgba(122,54,224,0.22)" size={560} style={{ right: '-200px', top: '120px' }} />
+      <div className="relative max-w-narrow mx-auto">
         <div className="border-l-[6px] border-butter-500 pl-5 mb-10">
           <Eyebrow className="mb-2">Let's find out.</Eyebrow>
-          <Display size="m" className="text-paper-100">Is the bootcamp right for you?</Display>
+          <Display size="m" className="text-white">Is the bootcamp right for you?</Display>
         </div>
 
         <div className="space-y-3">
           {questions.map((q, i) => (
             <div
               key={i}
-              className={`bg-ink-900 border rounded-[4px] px-6 py-5 cursor-pointer transition-colors ${
+              className={`bg-ink-800/50 border rounded-[14px] px-6 py-5 cursor-pointer transition-colors ${
                 open === i ? 'border-butter-500/50' : 'border-ink-700 hover:border-ink-600'
               }`}
               onClick={() => setOpen(open === i ? null : i)}
             >
               <div className="flex items-center justify-between gap-4">
                 <h3
-                  className="font-sans text-[16px] md:text-[18px] text-paper-100 font-medium [&_em]:not-italic [&_em]:text-butter-500 [&_em]:font-bold"
+                  className="font-display text-[16px] md:text-[18px] text-white font-medium [&_em]:not-italic [&_em]:grad-text [&_em]:font-bold"
                   dangerouslySetInnerHTML={{ __html: q.q }}
                 />
-                <span className={`font-display font-black text-[24px] leading-none flex-shrink-0 transition-transform duration-200 ${open === i ? 'rotate-45 text-butter-500' : 'text-ink-400'}`}>
+                <span className={`font-display font-bold text-[24px] leading-none flex-shrink-0 transition-transform duration-200 ${open === i ? 'rotate-45 text-butter-500' : 'text-ink-400'}`}>
                   +
                 </span>
               </div>
@@ -457,43 +527,46 @@ function Curriculum() {
   ]
 
   return (
-    <section id="curriculum" className="bg-paper-100 py-20 md:py-28 px-5 md:px-8">
+    <section id="curriculum" className="bg-paper py-20 md:py-28 px-5 md:px-8" style={{ color: '#15161a' }}>
       <div className="max-w-narrow mx-auto">
         <Eyebrow className="text-rust-500 mb-3 text-center">The 6 live sessions</Eyebrow>
-        <Display size="m" className="text-ink-900 text-center mb-3">
-          Here's what<br /><span className="text-rust-500">you'll build.</span>
+        <Display size="m" className="text-center mb-3" style={{ color: '#15161a' }}>
+          Here's what<br /><span className="grad-text">you'll build.</span>
         </Display>
-        <p className="font-serif text-[15px] text-ink-700 text-center mb-14">
+        <p className="font-mono text-[12px] uppercase tracking-caps text-center mb-14" style={{ color: '#5c5b57' }}>
           All sessions 60 min &middot; M/W/F &middot; 3:00 PM ET &middot; June 1 &ndash; June 12, 2026
         </p>
 
         {/* Timeline */}
         <div className="relative">
           {/* Vertical line — desktop center */}
-          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-[2px] bg-rust-500/30 -translate-x-1/2" />
+          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-[2px] -translate-x-1/2" style={{ background: 'linear-gradient(180deg, rgba(232,69,138,0.45), rgba(47,143,255,0.45))' }} />
           {/* Vertical line — mobile left */}
-          <div className="md:hidden absolute left-5 top-0 bottom-0 w-[2px] bg-rust-500/30" />
+          <div className="md:hidden absolute left-5 top-0 bottom-0 w-[2px]" style={{ background: 'linear-gradient(180deg, rgba(232,69,138,0.45), rgba(47,143,255,0.45))' }} />
 
           <div className="space-y-10 md:space-y-14">
             {sessions.map((s) => {
               const isEven = s.num % 2 === 0
               return (
                 <div key={s.num} className="relative">
-                  {/* Numbered circle on the line */}
-                  <div className="absolute z-10 w-11 h-11 rounded-full bg-ink-900 border-2 border-butter-500 flex items-center justify-center left-0 md:left-1/2 md:-translate-x-1/2">
-                    <span className="font-display font-black text-[18px] text-butter-500 leading-none">{s.num}</span>
+                  {/* Module gradient tile on the line */}
+                  <div className="absolute z-10 left-0 md:left-1/2 md:-translate-x-1/2">
+                    <div className="relative w-11 h-11 rounded-[14px] overflow-hidden flex items-center justify-center shadow-card ring-4 ring-paper" style={{ background: MODULE_GRADS[s.num - 1] }}>
+                      <div aria-hidden="true" className="absolute inset-0" style={{ background: 'linear-gradient(125deg, rgba(255,255,255,0.24), transparent 42%, transparent 76%, rgba(0,0,0,0.16))' }} />
+                      <span className="relative z-10 font-display font-bold text-[18px] text-white leading-none">{s.num}</span>
+                    </div>
                   </div>
 
                   {/* Content — desktop alternates, mobile always right */}
                   <div className={`pl-16 md:pl-0 md:w-[45%] ${isEven ? 'md:ml-auto md:pl-14' : 'md:mr-auto md:pr-14 md:text-right'}`}>
-                    <span className="inline-block bg-ink-900 text-butter-500 font-sans text-[11px] font-bold uppercase tracking-caps px-3 py-1 rounded-[2px] mb-2.5">
+                    <span className="inline-block bg-ink-900 text-butter-500 font-mono text-[11px] font-bold uppercase tracking-caps px-3 py-1 rounded-full mb-2.5">
                       {s.date}
                     </span>
-                    <Display size="s" as="h3" className="text-ink-900 mb-2.5" style={{ fontSize: 'clamp(22px, 2.5vw, 30px)' }}>{s.title}</Display>
-                    <p className="font-serif text-[15px] text-ink-700 leading-[1.55] mb-3">{s.desc}</p>
-                    <div className={`inline-block bg-paper-200 border border-paper-300 rounded-[2px] px-3 py-1.5 ${isEven ? '' : 'md:ml-auto'}`}>
-                      <p className="font-sans text-[10px] font-bold uppercase tracking-caps text-rust-500 mb-0.5">Asset included</p>
-                      <p className="font-sans text-[13px] font-semibold text-ink-900">{s.asset}</p>
+                    <Display size="s" as="h3" className="mb-2.5" style={{ fontSize: 'clamp(22px, 2.5vw, 30px)', color: '#15161a' }}>{s.title}</Display>
+                    <p className="font-serif text-[15px] leading-[1.55] mb-3" style={{ color: '#5c5b57' }}>{s.desc}</p>
+                    <div className={`inline-block bg-white border border-paper-300 rounded-[10px] px-3 py-1.5 ${isEven ? '' : 'md:ml-auto'}`}>
+                      <p className="font-mono text-[10px] font-bold uppercase tracking-caps text-rust-500 mb-0.5">Asset included</p>
+                      <p className="font-display text-[13px] font-semibold" style={{ color: '#15161a' }}>{s.asset}</p>
                     </div>
                   </div>
                 </div>
@@ -504,17 +577,17 @@ function Curriculum() {
 
         {/* Closing */}
         <div className="mt-16 text-center">
-          <Display size="s" className="text-ink-900 leading-[1.05] mb-5" style={{ fontSize: 'clamp(22px, 3vw, 36px)' }}>
-            We build <span className="text-rust-500">together</span>.<br />
-            You leave with <span className="text-rust-500">a finished manuscript</span>.
+          <Display size="s" className="leading-[1.05] mb-5" style={{ fontSize: 'clamp(22px, 3vw, 36px)', color: '#15161a' }}>
+            We build <span className="grad-text">together</span>.<br />
+            You leave with <span className="grad-text">a finished manuscript</span>.
           </Display>
-          <p className="font-serif text-[16px] text-ink-700 mb-8">
+          <p className="font-serif text-[16px] mb-8" style={{ color: '#5c5b57' }}>
             This isn't self-paced content you buy and forget.
           </p>
           <a
             href={DEFAULT_CTA_URL}
             onClick={() => trackCTA('Curriculum')}
-            className="inline-block bg-ink-900 text-butter-500 font-sans font-bold uppercase text-[15px] tracking-[0.08em] px-9 py-5 rounded-[3px] hover:bg-ink-800 transition-colors shadow-hard"
+            className="btn-grad inline-block text-white font-mono font-bold uppercase text-[15px] tracking-[0.04em] px-9 py-5 rounded-full"
           >
             Join Self-Publishing Studio LIVE
           </a>
@@ -551,21 +624,23 @@ function Captains() {
   ]
 
   return (
-    <section id="captains" className="bg-ink-900 py-20 md:py-28 px-5 md:px-8">
-      <div className="max-w-container mx-auto grid lg:grid-cols-[1.2fr_1fr] gap-12 lg:gap-16 items-start">
+    <section id="captains" className="relative overflow-hidden bg-ink-900 py-20 md:py-28 px-5 md:px-8">
+      <Bloom color="rgba(47,143,255,0.22)" size={620} style={{ right: '-200px', top: '-120px' }} />
+      <Bloom color="rgba(232,69,138,0.18)" size={520} style={{ left: '-200px', bottom: '40px' }} />
+      <div className="relative max-w-container mx-auto grid lg:grid-cols-[1.2fr_1fr] gap-12 lg:gap-16 items-start">
         {/* Left — headline + subhead + stat pills */}
         <div>
           <Eyebrow className="text-rust-500 mb-5">Meet Your Instructors</Eyebrow>
-          <Display size="m" className="text-paper-100 mb-6">
+          <Display size="m" className="text-white mb-6">
             Built by a best-selling author<br />
-            <span className="text-butter-500">with 10+ published books.</span>
+            <span className="grad-text">with 10+ published books.</span>
           </Display>
           <p className="font-serif text-[17px] text-ink-200 leading-[1.55] max-w-[520px] mb-8">
             Created by the founders of Ship 30 for 30 &amp; Premium Ghostwriting Academy.
           </p>
           <div className="flex flex-wrap gap-2.5">
             {stats.map((s) => (
-              <span key={s} className="inline-flex items-center bg-rust-500 text-paper-100 font-sans text-[12px] font-bold uppercase tracking-caps px-4 py-2 rounded-full">
+              <span key={s} className="inline-flex items-center text-white font-mono text-[12px] font-bold uppercase tracking-caps px-4 py-2 rounded-full" style={{ background: GRAD_CHIP }}>
                 {s}
               </span>
             ))}
@@ -576,12 +651,12 @@ function Captains() {
         <div className="flex flex-col gap-5">
           {captains.map((c) => (
             <div key={c.name} className="flex gap-5 items-start">
-              <div className="w-[88px] h-[88px] md:w-[96px] md:h-[96px] rounded-[4px] overflow-hidden flex-shrink-0 border border-ink-700">
+              <div className="w-[88px] h-[88px] md:w-[96px] md:h-[96px] rounded-[16px] overflow-hidden flex-shrink-0 border border-ink-700">
                 <img src={c.img} alt={c.name} className="w-full h-full object-cover object-top" />
               </div>
               <div>
-                <p className="font-display font-black text-[20px] md:text-[22px] text-paper-100 uppercase tracking-caps-lg leading-none">{c.name}</p>
-                <p className="font-sans font-bold text-[11px] uppercase tracking-caps text-rust-500 mt-2 mb-3">{c.role}</p>
+                <p className="font-display font-bold text-[20px] md:text-[22px] text-white tracking-caps-lg leading-none">{c.name}</p>
+                <p className="font-mono font-bold text-[11px] uppercase tracking-caps text-rust-500 mt-2 mb-3">{c.role}</p>
                 <p className="font-serif text-[15px] leading-[1.55] text-ink-200">{c.bio}</p>
               </div>
             </div>
@@ -604,8 +679,8 @@ function Captains() {
           ].map((c) => (
             <div
               key={c.src}
-              className="aspect-[2/3] overflow-hidden rounded-[2px] bg-ink-800 transition-transform duration-200 hover:-translate-y-1"
-              style={{ boxShadow: '4px 4px 0 #08111F' }}
+              className="aspect-[2/3] overflow-hidden rounded-[8px] bg-ink-800 transition-transform duration-200 hover:-translate-y-1"
+              style={{ boxShadow: '0 10px 28px rgba(2,6,18,0.5)' }}
             >
               <img
                 src={c.src}
@@ -650,11 +725,13 @@ function MiniCourses() {
   ]
 
   return (
-    <section className="bg-ink-900 py-20 md:py-28 px-5 md:px-8">
-      <div className="max-w-container mx-auto">
+    <section className="relative overflow-hidden bg-ink-900 py-20 md:py-28 px-5 md:px-8">
+      <Bloom color="rgba(122,54,224,0.20)" size={560} style={{ left: '-200px', top: '60px' }} />
+      <Bloom color="rgba(246,131,31,0.18)" size={520} style={{ right: '-200px', bottom: '40px' }} />
+      <div className="relative max-w-container mx-auto">
         <Eyebrow className="mb-4">Video &amp; Text Curriculum</Eyebrow>
-        <Display size="m" className="text-paper-100 max-w-[920px] mb-5">
-          3 Self-Publishing<br /><span className="text-butter-500">Mini-Courses.</span>
+        <Display size="m" className="text-white max-w-[920px] mb-5">
+          3 Self-Publishing<br /><span className="grad-text">Mini-Courses.</span>
         </Display>
         <p className="font-serif text-[18px] text-ink-200 mb-14 max-w-[720px]">
           Get access to the Self-Publishing Studio self-study course:
@@ -662,12 +739,12 @@ function MiniCourses() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {courses.map((c) => (
             <div key={c.title} className="flex flex-col items-center text-center">
-              <div className="bg-ink-800 border border-ink-700 rounded-[4px] p-8 mb-6 w-full flex items-center justify-center" style={{ minHeight: 280 }}>
-                <img src={c.img} alt={c.title} className="max-w-full max-h-[220px] object-contain drop-shadow-[10px_14px_20px_rgba(0,0,0,0.55)]" loading="lazy" />
+              <div className="bg-ink-800 border border-ink-700 rounded-[16px] p-8 mb-6 w-full flex items-center justify-center" style={{ minHeight: 280 }}>
+                <img src={c.img} alt={c.title} className="max-w-full max-h-[220px] object-contain drop-shadow-[0_18px_30px_rgba(0,0,0,0.55)]" loading="lazy" />
               </div>
               <Eyebrow className="mb-2">{c.eyebrow}</Eyebrow>
-              <Display size="s" as="h3" className="text-paper-100 mb-2">{c.title}</Display>
-              <p className="font-sans font-bold text-[14px] text-butter-500 tracking-caps mb-3">{c.value}</p>
+              <Display size="s" as="h3" className="text-white mb-2">{c.title}</Display>
+              <p className="font-mono font-bold text-[14px] text-butter-500 tracking-caps mb-3">{c.value}</p>
               <p className="font-serif text-[15px] leading-[1.55] text-ink-200">{c.desc}</p>
             </div>
           ))}
@@ -708,27 +785,28 @@ function Bonuses() {
   ]
 
   return (
-    <section id="bonuses" className="bg-ink-800 py-20 md:py-28 px-5 md:px-8">
-      <div className="max-w-container mx-auto">
+    <section id="bonuses" className="relative overflow-hidden bg-ink-800 py-20 md:py-28 px-5 md:px-8">
+      <Bloom color="rgba(47,143,255,0.18)" size={560} style={{ right: '-220px', top: '40px' }} />
+      <div className="relative max-w-container mx-auto">
         <Eyebrow className="mb-4">Free Bonuses Included</Eyebrow>
-        <Display size="m" className="text-paper-100 max-w-[1000px] mb-14">
+        <Display size="m" className="text-white max-w-[1000px] mb-14">
           Finally claim your badge<br />
-          <span className="text-butter-500">of being an author.</span>
+          <span className="grad-text">of being an author.</span>
         </Display>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {bonuses.map((b) => (
-            <div key={b.num} className="bg-ink-900 border border-ink-700 rounded-[4px] p-7 flex flex-col gap-4">
+            <div key={b.num} className="bg-ink-900 border border-ink-700 rounded-[16px] p-7 flex flex-col gap-4 transition-shadow hover:shadow-glow">
               <div className="flex items-start justify-between">
-                <span className="font-sans text-[11px] font-bold uppercase tracking-caps text-butter-500 mt-2">
+                <span className="font-mono text-[11px] font-bold uppercase tracking-caps text-butter-500 mt-2">
                   Bonus #{b.num}
                 </span>
                 <img src={b.icon} alt="" className="w-16 h-16 md:w-[72px] md:h-[72px] -mt-1 -mr-1" />
               </div>
-              <Display size="s" as="h3" className="text-paper-100">{b.title}</Display>
+              <Display size="s" as="h3" className="text-white">{b.title}</Display>
               <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                <p className="font-sans font-bold text-[14px] text-butter-500 tracking-caps">{b.value}</p>
+                <p className="font-mono font-bold text-[14px] text-butter-500 tracking-caps">{b.value}</p>
                 {b.expires && (
-                  <p className="font-sans font-bold text-[11px] uppercase tracking-caps text-rust-400">&middot; {b.expires}</p>
+                  <p className="font-mono font-bold text-[11px] uppercase tracking-caps text-rust-400">&middot; {b.expires}</p>
                 )}
               </div>
               <p className="font-serif text-[15px] leading-[1.55] text-ink-200">{b.desc}</p>
@@ -752,11 +830,12 @@ function AIWritingSkool() {
   ]
 
   return (
-    <section className="bg-ink-900 py-20 md:py-28 px-5 md:px-8">
-      <div className="max-w-container mx-auto">
+    <section className="relative overflow-hidden bg-ink-900 py-20 md:py-28 px-5 md:px-8">
+      <Bloom color="rgba(22,160,210,0.20)" size={580} style={{ left: '-220px', bottom: '20px' }} />
+      <div className="relative max-w-container mx-auto">
         <Eyebrow className="mb-4">Included free with the bootcamp</Eyebrow>
-        <Display size="m" className="text-paper-100 mb-4">
-          30-Day Trial to<br /><span className="text-butter-500">AI Writing Skool.</span>
+        <Display size="m" className="text-white mb-4">
+          30-Day Trial to<br /><span className="grad-text">AI Writing Skool.</span>
         </Display>
         <p className="font-serif text-[18px] text-ink-200 mb-12 max-w-[760px]">
           AI Writing Skool is THE community for writers and creators building in the new AI economy &mdash;
@@ -765,7 +844,7 @@ function AIWritingSkool() {
 
         <div className="flex flex-col md:flex-row gap-10 md:gap-12 items-start">
           <div className="w-full md:w-[45%] flex-shrink-0">
-            <img src="/images/AIWS.png" alt="AI Writing Skool" className="w-full object-contain rounded-[4px] border border-ink-700" loading="lazy" />
+            <img src="/images/AIWS.png" alt="AI Writing Skool" className="w-full object-contain rounded-[16px] border border-ink-700" loading="lazy" />
           </div>
           <div className="flex-1">
             <Eyebrow className="mb-5">Inside, you'll unlock:</Eyebrow>
@@ -774,16 +853,16 @@ function AIWritingSkool() {
                 <div key={p.title} className="flex gap-3">
                   <span className="text-butter-500 mt-1 flex-shrink-0">→</span>
                   <div>
-                    <span className="font-sans text-[15px] font-bold text-paper-100">{p.title}:</span>
+                    <span className="font-display text-[15px] font-bold text-white">{p.title}:</span>
                     <span className="font-serif text-[15px] text-ink-200"> {p.desc}</span>
-                    <span className="font-sans text-[13px] text-butter-500 font-semibold"> ({p.value})</span>
+                    <span className="font-mono text-[13px] text-butter-500 font-bold"> ({p.value})</span>
                   </div>
                 </div>
               ))}
               <div className="flex gap-3">
                 <span className="text-butter-500 mt-1 flex-shrink-0">→</span>
                 <div>
-                  <span className="font-sans text-[15px] font-bold text-paper-100">Daily Q&amp;A Channel:</span>
+                  <span className="font-display text-[15px] font-bold text-white">Daily Q&amp;A Channel:</span>
                   <span className="font-serif text-[15px] text-ink-200"> Never get stuck. Get answers from the community and our team every single day.</span>
                 </div>
               </div>
@@ -816,51 +895,52 @@ function Pricing() {
   ]
 
   return (
-    <section id="pricing" className="bg-ink-800 py-24 md:py-32 px-5 md:px-8">
-      <div className="max-w-narrow mx-auto text-center">
+    <section id="pricing" className="relative overflow-hidden bg-ink-800 py-24 md:py-32 px-5 md:px-8">
+      <Bloom color="rgba(232,69,138,0.20)" size={620} style={{ left: '-200px', top: '120px' }} />
+      <Bloom color="rgba(246,131,31,0.18)" size={520} style={{ right: '-200px', bottom: '60px' }} />
+      <div className="relative max-w-narrow mx-auto text-center">
         <Eyebrow className="mb-4">Join The Bootcamp</Eyebrow>
         <h2
-          className="font-display font-black uppercase text-paper-100 tracking-display mb-12"
+          className="font-display font-bold text-white tracking-display [text-wrap:balance] mb-12"
           style={{ fontSize: 'clamp(28px, 4.2vw, 56px)', lineHeight: 1.0 }}
         >
           Want To Write Your<br />
           First (Or Next)<br />
-          <span className="text-butter-500">Non-Fiction Book</span><br />
+          <span className="grad-text">Non-Fiction Book</span><br />
           In 14 Days?
         </h2>
 
-        <div className="max-w-[560px] mx-auto rounded-[4px] overflow-hidden shadow-hard-lg">
+        <div className="max-w-[560px] mx-auto rounded-[20px] overflow-hidden shadow-float">
           {/* Top: value stack */}
           <div className="bg-ink-900 border border-ink-700 border-b-0 p-7 md:p-9 text-left">
             {items.map((item, i) => (
               <div key={i} className="flex justify-between items-center py-2.5 border-b border-ink-700 last:border-b-0 gap-4">
-                <span className="font-sans text-[14px] text-paper-200">{item.name}</span>
-                <span className="font-sans text-[14px] font-semibold text-ink-300 flex-shrink-0">{item.price}</span>
+                <span className="font-display text-[14px] text-paper-200">{item.name}</span>
+                <span className="font-mono text-[13px] font-bold text-ink-300 flex-shrink-0 tabular-nums">{item.price}</span>
               </div>
             ))}
             <div className="flex justify-between items-center pt-4 mt-3 border-t border-ink-600">
-              <span className="font-sans text-[14px] font-bold text-paper-100">Total Value</span>
-              <span className="font-display font-black text-[24px] text-paper-100 line-through decoration-rust-500 decoration-2">$13,190</span>
+              <span className="font-display text-[14px] font-bold text-white">Total Value</span>
+              <span className="font-display font-bold text-[24px] text-white line-through decoration-rust-500 decoration-2">$13,190</span>
             </div>
           </div>
 
-          {/* Bottom: price reveal — butter card */}
-          <div className="bg-butter-500 p-7 md:p-9 text-center">
-            <p className="font-sans text-[11px] font-bold uppercase tracking-caps text-ink-900/60">Your Price</p>
-            <p className="font-display font-black text-[clamp(64px,10vw,96px)] text-ink-900 leading-none mt-2">$800</p>
+          {/* Bottom: price reveal — warm paper card floating on navy */}
+          <div className="relative overflow-hidden p-7 md:p-9 text-center" style={{ background: '#e7e5df' }}>
+            <p className="font-mono text-[11px] font-bold uppercase tracking-caps" style={{ color: '#5c5b57' }}>Your Price</p>
+            <p className="grad-text font-display font-bold text-[clamp(64px,10vw,96px)] leading-none mt-2">$800</p>
             <a
               href={DEFAULT_CTA_URL}
               onClick={() => trackCTA('Pricing')}
-              className="inline-block bg-ink-900 text-butter-500 font-sans font-bold uppercase text-[15px] tracking-[0.08em] px-9 py-5 rounded-[3px] mt-6 hover:bg-ink-800 transition-colors"
-              style={{ boxShadow: '8px 8px 0 rgba(8,17,31,0.35)' }}
+              className="btn-grad inline-block text-white font-mono font-bold uppercase text-[15px] tracking-[0.04em] px-9 py-5 rounded-full mt-6"
             >
               Join Self-Publishing Studio LIVE &rarr;
             </a>
-            <p className="font-sans text-[12px] text-ink-900/70 mt-4">7-day money-back guarantee</p>
+            <p className="font-mono text-[12px] mt-4" style={{ color: '#5c5b57' }}>7-day money-back guarantee</p>
           </div>
         </div>
 
-        <p className="font-sans text-[11px] uppercase tracking-caps text-ink-300 mt-10 mb-3">Enrollment closes in</p>
+        <p className="font-mono text-[11px] uppercase tracking-caps text-ink-300 mt-10 mb-3">Enrollment closes in</p>
         <div className="inline-block"><CountdownTimer targetDate={CART_CLOSE_DATE} /></div>
       </div>
     </section>
@@ -882,8 +962,8 @@ function PatternBookCover({
   subtitle?: string
   author?: string
 }) {
-  const fg = '#EFE183' // butter-500
-  const bg = '#0C1929' // ink-900
+  const fg = '#ffffff'
+  const bg = '#0a1c46'
   return (
     <div
       className="relative"
@@ -891,7 +971,7 @@ function PatternBookCover({
         width: 'min(320px, 100%)',
         aspectRatio: '320 / 460',
         containerType: 'inline-size',
-        boxShadow: '14px 14px 0 #0C1929, 0 30px 50px rgba(12,25,41,0.25)',
+        boxShadow: '0 28px 70px rgba(2,6,18,0.5)',
       }}
     >
       {/* Cover face */}
@@ -900,15 +980,13 @@ function PatternBookCover({
         style={{
           background: bg,
           backgroundImage:
-            'url("/images/sps/book-pattern.svg"), radial-gradient(120% 80% at 30% 20%, rgba(255,255,255,0.04), transparent 60%)',
-          backgroundSize: '56.25cqw auto, auto',
-          backgroundBlendMode: 'screen, normal',
+            'radial-gradient(80% 60% at 78% 14%, rgba(232,69,138,0.55), transparent 60%), radial-gradient(70% 60% at 18% 90%, rgba(47,143,255,0.5), transparent 62%), linear-gradient(118deg, #050f26 0%, #0a1c46 54%, #0c2152 100%)',
         }}
       >
         {/* Inner debossed frame */}
         <div
           className="absolute pointer-events-none"
-          style={{ inset: '3.75cqw', border: '1px solid rgba(239,225,131,0.28)' }}
+          style={{ inset: '3.75cqw', border: '1px solid rgba(180,214,255,0.30)' }}
         />
         {/* Content stack */}
         <div className="absolute flex flex-col" style={{ inset: '6.875cqw' }}>
@@ -922,7 +1000,7 @@ function PatternBookCover({
           {/* Title + subtitle */}
           <div className="flex-1 flex flex-col justify-center min-h-0">
             <div
-              className="font-display font-black uppercase"
+              className="font-display font-bold uppercase"
               style={{
                 fontSize: '18.75cqw',
                 lineHeight: 0.86,
@@ -993,29 +1071,33 @@ function GuaranteeFinalCTA() {
   return (
     <section id="final-cta" className="bg-ink-900 py-20 md:py-28 px-5 md:px-8">
       <div className="max-w-container mx-auto">
-        <div className="bg-butter-500 text-ink-900 p-10 md:p-14 rounded-[4px] shadow-hard-lg">
-          <div className="grid lg:grid-cols-[1.05fr_1fr] gap-12 lg:gap-14 items-center">
+        <div className="relative overflow-hidden text-white p-10 md:p-14 rounded-[20px] shadow-float" style={{ background: GRAD_NAVY_BANNER }}>
+          {/* Signature decoration */}
+          <Bloom color="rgba(232,69,138,0.42)" size={620} style={{ right: '-160px', top: '-200px' }} />
+          <Bloom color="rgba(246,131,31,0.34)" size={460} style={{ right: '120px', top: '40px' }} />
+          <Bloom color="rgba(47,143,255,0.34)" size={520} style={{ left: '-180px', bottom: '-160px' }} />
+          <Flare scale={0.7} style={{ right: '220px', top: '180px', width: 1, height: 1 }} />
+          <div className="relative grid lg:grid-cols-[1.05fr_1fr] gap-12 lg:gap-14 items-center">
             {/* Copy column */}
             <div>
-              <p className="font-sans text-[12px] font-bold uppercase tracking-caps text-ink-900 mb-6">
+              <p className="font-mono text-[12px] font-bold uppercase tracking-caps text-butter-500 mb-6">
                 Stop overthinking &middot; finally write the book
               </p>
-              <Display size="l" className="text-ink-900 mb-6">
-                Your book.<br />This year.
+              <Display size="l" className="text-white mb-6">
+                Your book.<br /><span className="grad-text">This year.</span>
               </Display>
-              <p className="font-serif text-[20px] leading-[1.55] text-ink-900 max-w-[560px] mb-9">
+              <p className="font-serif text-[20px] leading-[1.55] text-ink-200 max-w-[560px] mb-9">
                 Six live sessions, three mini-courses, six AI-powered writing assets, and three fast-action bonuses.
                 Lifetime access. 7-day no-questions-asked refund if you show up to Session 1 and decide this isn't what you expected.
               </p>
               <a
                 href={DEFAULT_CTA_URL}
                 onClick={() => trackCTA('Final')}
-                className="inline-block bg-ink-900 text-butter-500 font-sans font-bold uppercase text-[17px] tracking-[0.08em] px-10 py-5 rounded-[3px] hover:bg-ink-800 transition-colors"
-                style={{ boxShadow: '8px 8px 0 rgba(8,17,31,0.35)' }}
+                className="btn-grad inline-block text-white font-mono font-bold uppercase text-[17px] tracking-[0.04em] px-10 py-5 rounded-full"
               >
                 Join Self-Publishing Studio LIVE
               </a>
-              <p className="font-sans text-[14px] text-ink-900/70 mt-5">
+              <p className="font-mono text-[14px] text-ink-300 mt-5">
                 Live bootcamp begins Monday, June 1, 2026.
               </p>
             </div>
@@ -1024,7 +1106,7 @@ function GuaranteeFinalCTA() {
             <div className="flex flex-col items-center lg:items-end gap-4 pl-2 pr-4 lg:pr-8">
               <PatternBookCover />
               <p
-                className="font-sans font-bold uppercase text-ink-900/55 whitespace-nowrap"
+                className="font-mono font-bold uppercase text-ink-300 whitespace-nowrap"
                 style={{ fontSize: 12, letterSpacing: '0.22em' }}
               >
                 &mdash; Could be yours &mdash;
@@ -1057,11 +1139,12 @@ function FAQ() {
   const [open, setOpen] = useState<number | null>(0)
 
   return (
-    <section id="faq" className="bg-ink-900 py-20 md:py-28 px-5 md:px-8">
-      <div className="max-w-narrow mx-auto">
+    <section id="faq" className="relative overflow-hidden bg-ink-900 py-20 md:py-28 px-5 md:px-8">
+      <Bloom color="rgba(47,143,255,0.16)" size={520} style={{ left: '-220px', top: '80px' }} />
+      <div className="relative max-w-narrow mx-auto">
         <Eyebrow className="mb-4">Frequently asked questions</Eyebrow>
-        <Display size="m" className="text-butter-500 mb-12">Still wondering?</Display>
-        <div className="flex flex-col gap-[2px] bg-ink-700">
+        <Display size="m" className="mb-12"><span className="grad-text">Still wondering?</span></Display>
+        <div className="flex flex-col gap-[2px] bg-ink-700 rounded-[16px] overflow-hidden">
           {faqs.map((faq, i) => {
             const isOpen = open === i
             return (
@@ -1071,11 +1154,11 @@ function FAQ() {
                     if (!isOpen) Fathom.trackEvent(`FAQ: ${faq.q}`)
                     setOpen(isOpen ? null : i)
                   }}
-                  className="w-full bg-transparent border-none cursor-pointer px-6 md:px-7 py-5 md:py-6 flex items-center justify-between text-left text-paper-100 font-sans text-[16px] md:text-[18px] font-semibold leading-tight hover:text-butter-500 transition-colors"
+                  className="w-full bg-transparent border-none cursor-pointer px-6 md:px-7 py-5 md:py-6 flex items-center justify-between text-left text-white font-display text-[16px] md:text-[18px] font-semibold leading-tight hover:text-butter-500 transition-colors"
                 >
                   <span className="pr-4">{faq.q}</span>
                   <span
-                    className="font-display font-black text-[28px] text-butter-500 leading-none flex-shrink-0 transition-transform duration-200"
+                    className="font-display font-bold text-[28px] text-butter-500 leading-none flex-shrink-0 transition-transform duration-200"
                     style={{ transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)' }}
                   >
                     +
@@ -1102,8 +1185,12 @@ function Footer() {
   return (
     <footer className="bg-ink-950 border-t border-ink-700 px-5 md:px-8 py-10">
       <div className="max-w-container mx-auto text-center">
-        <img src="/images/sps/wordmark-inline.svg" alt="Self-Publishing Studio" className="h-7 mx-auto mb-4 opacity-70" />
-        <p className="font-sans text-[12px] text-ink-500">
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <Spark className="w-3.5 h-3.5 text-accent-pink spark-pulse" />
+          <img src="/images/sps/wordmark-inline.svg" alt="Self-Publishing Studio" className="h-7 opacity-80" />
+          <Spark className="w-3.5 h-3.5 text-accent-blue spark-pulse" />
+        </div>
+        <p className="font-mono text-[12px] tracking-caps text-ink-500">
           &copy; 2026 Ship 30 for 30, LLC. All rights reserved.
         </p>
       </div>
@@ -1135,9 +1222,11 @@ function StickyCtaBar({ heroCtaRef }: { heroCtaRef: React.RefObject<HTMLAnchorEl
       }`}
     >
       <div className="max-w-container mx-auto px-5 h-[64px] flex items-center justify-between gap-4">
-        <span className="hidden md:flex items-center gap-3 font-display font-black text-[16px] text-butter-500 uppercase tracking-caps-lg">
-          <img src="/images/sps/bookshelf-mark.svg" alt="" className="w-6 h-6" />
-          Self-Publishing Studio LIVE
+        <span className="hidden md:flex items-center gap-3 font-display font-bold text-[16px] tracking-caps-lg">
+          <span className="w-7 h-7 rounded-[9px] flex items-center justify-center flex-shrink-0" style={{ background: GRAD_CHIP }}>
+            <Spark className="w-3.5 h-3.5 text-white" />
+          </span>
+          <span className="grad-text">Self-Publishing Studio LIVE</span>
         </span>
         <div className="hidden md:block">
           <CountdownTimer targetDate={CART_CLOSE_DATE} compact />
@@ -1145,7 +1234,7 @@ function StickyCtaBar({ heroCtaRef }: { heroCtaRef: React.RefObject<HTMLAnchorEl
         <a
           href={DEFAULT_CTA_URL}
           onClick={() => trackCTA('Sticky Bar')}
-          className="bg-butter-500 text-ink-900 font-sans font-bold uppercase text-[13px] tracking-caps px-6 py-2.5 rounded-[3px] hover:bg-butter-400 transition-colors mx-auto md:mx-0"
+          className="btn-grad text-white font-mono font-bold uppercase text-[13px] tracking-caps px-6 py-2.5 rounded-full mx-auto md:mx-0"
         >
           Join Now
         </a>
