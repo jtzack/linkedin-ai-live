@@ -733,7 +733,7 @@ function MiniCourses() {
                 <img src={c.img} alt={c.title} className="max-w-full max-h-[220px] object-contain drop-shadow-[0_18px_30px_rgba(0,0,0,0.55)]" loading="lazy" />
               </div>
               <Eyebrow className="mb-2">{c.eyebrow}</Eyebrow>
-              <Display size="s" as="h3" className="text-white mb-2">{c.title}</Display>
+              <Display size="s" as="h3" className="text-white mb-2 md:min-h-[2.9em]">{c.title}</Display>
               <p className="font-mono font-bold text-[14px] text-butter-500 tracking-caps mb-3">{c.value}</p>
               <p className="font-serif text-[15px] leading-[1.55] text-ink-200">{c.desc}</p>
             </div>
