@@ -692,21 +692,21 @@ function Captains() {
 function MiniCourses() {
   const courses = [
     {
-      img: '/images/01-session.png',
+      img: '/images/mc1_positioning.png',
       eyebrow: 'Mini-Course #1',
       title: 'LinkedIn Positioning System',
       value: '$1,200 Value',
       desc: 'The complete system for positioning yourself so the right people know exactly what you do and why they should follow you. Nail your niche and optimize every part of your profile — bio, banner, About, and skills — so your profile does the selling for you.',
     },
     {
-      img: '/images/03-session.png',
+      img: '/images/mc2_publishing.png',
       eyebrow: 'Mini-Course #2',
       title: 'LinkedIn Publishing System',
       value: '$800 Value',
       desc: 'The system for publishing consistently without burning out or running out of ideas. Generate endless content ideas, write hooks that stop the scroll, and use proven structures to turn one idea into a finished post in minutes.',
     },
     {
-      img: '/images/04-session.png',
+      img: '/images/mc3_growth.png',
       eyebrow: 'Mini-Course #3',
       title: 'LinkedIn Growth System',
       value: '$1,500 Value',
