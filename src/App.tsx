@@ -281,16 +281,16 @@ function Hero({ ctaRef }: { ctaRef: React.RefObject<HTMLAnchorElement | null> })
                 </div>
               </div>
 
-              {/* Dickie Bush — top-left */}
+              {/* Daniel Bustamante — top-left */}
               <div className="absolute left-0 top-[64px] z-10 flex flex-col items-center w-[150px] lg:w-[170px]">
                 <div
                   className="w-[130px] h-[130px] lg:w-[150px] lg:h-[150px] rounded-full overflow-hidden border border-white/15"
                   style={{ backgroundColor: '#0c2152', boxShadow: '0 16px 48px rgba(2,6,18,0.5)' }}
                 >
-                  <img src="/images/sps/dickie-circle.png" alt="Dickie Bush" className="w-full h-full object-cover object-top" />
+                  <img src="/images/daniel-circle.png" alt="Daniel Bustamante" className="w-full h-full object-cover object-top" />
                 </div>
-                <p className="font-display font-bold text-white mt-2.5 text-[15px] lg:text-[16px] tracking-caps-lg">Dickie Bush</p>
-                <p className="font-mono text-[9px] font-bold uppercase tracking-caps text-ink-300 mt-1 text-center">Co-Founder,<br />Ship 30 for 30</p>
+                <p className="font-display font-bold text-white mt-2.5 text-[15px] lg:text-[16px] tracking-caps-lg">Daniel Bustamante</p>
+                <p className="font-mono text-[9px] font-bold uppercase tracking-caps text-ink-300 mt-1 text-center">Co-Founder, Velocity</p>
               </div>
 
               {/* Matthew Brown — top-right */}
@@ -305,16 +305,16 @@ function Hero({ ctaRef }: { ctaRef: React.RefObject<HTMLAnchorElement | null> })
                 <p className="font-mono text-[9px] font-bold uppercase tracking-caps text-ink-300 mt-1 text-center">Founder,<br />Tribe Digital</p>
               </div>
 
-              {/* Daniel Bustamante — bottom-center, in front */}
+              {/* Dickie Bush — bottom-center, in front (lead) */}
               <div className="absolute left-1/2 -translate-x-1/2 bottom-0 z-20 flex flex-col items-center w-[180px] lg:w-[200px]">
                 <div
                   className="w-[170px] h-[170px] lg:w-[190px] lg:h-[190px] rounded-full overflow-hidden border border-white/15"
                   style={{ backgroundColor: '#0c2152', boxShadow: '0 24px 64px rgba(2,6,18,0.55)' }}
                 >
-                  <img src="/images/daniel-circle.png" alt="Daniel Bustamante" className="w-full h-full object-cover object-top" />
+                  <img src="/images/sps/dickie-circle.png" alt="Dickie Bush" className="w-full h-full object-cover object-top" />
                 </div>
-                <p className="font-display font-bold text-white mt-2.5 text-[15px] lg:text-[16px] tracking-caps-lg">Daniel Bustamante</p>
-                <p className="font-mono text-[9px] font-bold uppercase tracking-caps text-ink-300 mt-1 text-center">Co-Founder, Velocity</p>
+                <p className="font-display font-bold text-white mt-2.5 text-[15px] lg:text-[16px] tracking-caps-lg">Dickie Bush</p>
+                <p className="font-mono text-[9px] font-bold uppercase tracking-caps text-ink-300 mt-1 text-center">Co-Founder,<br />Ship 30 for 30</p>
               </div>
             </div>
           </div>
@@ -331,18 +331,18 @@ function WhyWriteABook() {
   const reasons = [
     {
       num: '01',
-      title: 'A career marketplace.',
-      body: '87% of recruiters use LinkedIn to find candidates. It’s where hiring happens — and where the right people are already looking for someone exactly like you.',
+      title: 'Get Promoted',
+      body: '87% of recruiters use LinkedIn to find candidates. Show up the right way and you become the obvious choice the moment new roles and opportunities open up.',
     },
     {
       num: '02',
-      title: 'A content platform.',
-      body: 'Industry experts build audiences and establish thought leadership here. The people actively writing and creating are the ones who get promoted and land clients.',
+      title: 'Land Clients',
+      body: 'Industry experts build audiences and authority here. The people actively creating content are the ones who attract inbound leads and land clients on autopilot.',
     },
     {
       num: '03',
-      title: 'A business network.',
-      body: 'Deals get made and partnerships form. With over a billion members, it’s the largest professional network in history — more opportunity than anywhere else.',
+      title: 'Build A Bigger Business',
+      body: 'Deals get made and partnerships form. With over a billion members, a strong LinkedIn presence becomes a steady source of opportunities, partners, and growth.',
     },
   ]
 
@@ -357,8 +357,8 @@ function WhyWriteABook() {
           <span className="grad-text">One profile.</span>
         </Display>
         <p className="font-serif text-[17px] md:text-[19px] leading-[1.55] mb-12 max-w-[680px]" style={{ color: '#5c5b57' }}>
-          LinkedIn isn&rsquo;t a resume site anymore. It&rsquo;s become a Swiss Army knife for professionals &mdash;
-          three platforms rolled into one. There has never been a better time to show up the right way.
+          LinkedIn isn&rsquo;t a resume site anymore &mdash; it&rsquo;s three platforms rolled into one. And the people who
+          show up the right way are the ones who get promoted, land clients, and build bigger businesses.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -394,7 +394,7 @@ function Stats() {
   ]
 
   return (
-    <section className="relative overflow-hidden bg-ink-900 py-20 md:py-28 px-5 md:px-8 border-t border-ink-700">
+    <section className="relative overflow-hidden bg-ink-900 py-20 md:py-28 px-5 md:px-8">
       <Bloom color="rgba(47,143,255,0.28)" size={640} style={{ left: '-220px', top: '40px' }} />
       <Bloom color="rgba(232,69,138,0.24)" size={560} style={{ right: '-200px', bottom: '0px' }} />
       <div className="relative max-w-container mx-auto">
@@ -875,7 +875,7 @@ function Pricing() {
   ]
 
   return (
-    <section id="pricing" className="relative overflow-hidden bg-ink-800 py-24 md:py-32 px-5 md:px-8">
+    <section id="pricing" className="relative overflow-hidden bg-ink-800 py-20 md:py-28 px-5 md:px-8">
       <Bloom color="rgba(232,69,138,0.20)" size={620} style={{ left: '-200px', top: '120px' }} />
       <Bloom color="rgba(246,131,31,0.18)" size={520} style={{ right: '-200px', bottom: '60px' }} />
       <div className="relative max-w-narrow mx-auto text-center">
