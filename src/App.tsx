@@ -351,10 +351,10 @@ function WhyWriteABook() {
   return (
     <section className="bg-paper py-20 md:py-28 px-5 md:px-8" style={{ color: '#15161a' }}>
       <div className="max-w-container mx-auto">
-        <Eyebrow className="text-rust-500 mb-3">Why LinkedIn &mdash; and why now?</Eyebrow>
+        <Eyebrow className="text-rust-500 mb-3">The opportunity</Eyebrow>
         <Display size="m" className="mb-5 max-w-[920px]" style={{ color: '#15161a' }}>
-          Three platforms.<br />
-          <span className="grad-text">One profile.</span>
+          Why LinkedIn<br />
+          <span className="grad-text">(and why now)?</span>
         </Display>
         <p className="font-serif text-[17px] md:text-[19px] leading-[1.55] mb-12 max-w-[680px]" style={{ color: '#5c5b57' }}>
           LinkedIn isn&rsquo;t a resume site anymore &mdash; it&rsquo;s three platforms rolled into one. And the people who
