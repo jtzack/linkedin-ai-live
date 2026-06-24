@@ -2,12 +2,67 @@ import './index.css'
 import { useState, useEffect, useRef } from 'react'
 import * as Fathom from 'fathom-client'
 
-const DEFAULT_CTA_URL = 'https://ship.samcart.com/products/self-publishing-studio-live'
+const DEFAULT_CTA_URL = 'https://ship.samcart.com/products/linkedin-ai-live'
 
-// Cart closes at midnight ET the night before Session 1 (June 1, 2026)
-const CART_CLOSE_DATE = new Date('2026-06-01T03:59:00Z')
+// Cart closes at midnight ET the night before Session 1 (July 6, 2026)
+const CART_CLOSE_DATE = new Date('2026-07-06T03:59:00Z')
 
 const trackCTA = (location: string) => Fathom.trackEvent(`CTA: ${location}`)
+
+/* ─── Signature navy surface gradients ─── */
+const GRAD_NAVY_HERO = 'linear-gradient(118deg, #050f26 0%, #0a1c46 54%, #0c2152 100%)'
+const GRAD_NAVY_BANNER = 'linear-gradient(112deg, #06112a 0%, #0a1c46 56%, #0c2152 100%)'
+const GRAD_CHIP = 'linear-gradient(135deg, #e8458a, #f6831f)'
+
+/* ─── Decorative: color bloom (soft radial bleeding off the edge) ─── */
+function Bloom({ color, size, style }: { color: string; size: number; style?: React.CSSProperties }) {
+  return (
+    <div
+      aria-hidden="true"
+      className="bloom"
+      style={{ width: size, height: size, background: `radial-gradient(circle, ${color} 0%, transparent 62%)`, ...style }}
+    />
+  )
+}
+
+/* ─── Decorative: signature starburst lens flare (glowing core + crossed beams) ─── */
+function Flare({ scale = 1, style }: { scale?: number; style?: React.CSSProperties }) {
+  return (
+    <div aria-hidden="true" className="absolute pointer-events-none" style={style}>
+      <div
+        className="bloom"
+        style={{
+          left: '50%', top: '50%', transform: 'translate(-50%,-50%)',
+          width: 480 * scale, height: 480 * scale,
+          background: 'radial-gradient(circle, rgba(180,214,255,0.5) 0%, rgba(180,214,255,0) 60%)',
+          filter: 'blur(8px)',
+        }}
+      />
+      <div className="beam-h" style={{ left: '50%', top: '50%', transform: 'translate(-50%,-50%)', width: 620 * scale }} />
+      <div className="beam-v" style={{ left: '50%', top: '50%', transform: 'translate(-50%,-50%)', height: 560 * scale }} />
+    </div>
+  )
+}
+
+/* ─── Decorative: vignette to darken edges + focus content ─── */
+function Vignette({ at = '16% 50%' }: { at?: string }) {
+  return (
+    <div
+      aria-hidden="true"
+      className="absolute inset-0 pointer-events-none"
+      style={{ background: `radial-gradient(130% 150% at ${at}, transparent 38%, rgba(2,6,18,0.6))` }}
+    />
+  )
+}
+
+/* ─── LinkedIn AI four-point spark glyph ─── */
+function Spark({ className = '', style }: { className?: string; style?: React.CSSProperties }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} style={style} aria-hidden="true">
+      <path fill="currentColor" d="M12 2 C12.6 7.5 16.5 11.4 22 12 C16.5 12.6 12.6 16.5 12 22 C11.4 16.5 7.5 12.6 2 12 C7.5 11.4 11.4 7.5 12 2 Z" />
+    </svg>
+  )
+}
 
 /* ─── Fade-up on scroll ─── */
 function FadeIn({ children, className = '', delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
@@ -32,10 +87,10 @@ function FadeIn({ children, className = '', delay = 0 }: { children: React.React
   )
 }
 
-/* ─── Eyebrow ─── */
+/* ─── Eyebrow / kicker (Space Mono, uppercase, wide tracking, accent) ─── */
 function Eyebrow({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
-    <p className={`font-sans text-[12px] font-bold uppercase tracking-caps text-butter-500 ${className}`}>
+    <p className={`font-mono text-[12px] md:text-[13px] font-bold uppercase tracking-caps text-butter-500 ${className}`}>
       {children}
     </p>
   )
@@ -62,7 +117,7 @@ function Display({
     s: 'text-[clamp(28px,4vw,48px)]',
   }[size]
   return (
-    <Tag className={`font-display font-black uppercase leading-display tracking-display ${sizeClass} ${className}`} style={style}>
+    <Tag className={`font-display font-bold leading-display tracking-display [text-wrap:balance] ${sizeClass} ${className}`} style={style}>
       {children}
     </Tag>
   )
@@ -89,10 +144,10 @@ function PrimaryCTA({
       ref={onRef}
       href={href}
       onClick={() => track && trackCTA(track)}
-      className={`inline-block font-sans font-bold uppercase bg-butter-500 text-ink-900 rounded-[3px] transition-colors duration-150 hover:bg-butter-400 active:bg-butter-600 ${
+      className={`btn-grad inline-block font-mono font-bold uppercase text-white rounded-full ${
         big
-          ? 'px-9 py-5 text-[16px] tracking-[0.08em] shadow-hard'
-          : 'px-6 py-3.5 text-[13px] tracking-[0.08em] shadow-hard-sm'
+          ? 'px-9 py-5 text-[15px] tracking-[0.04em]'
+          : 'px-6 py-3.5 text-[13px] tracking-[0.04em]'
       } ${className}`}
     >
       {children}
@@ -139,7 +194,7 @@ function CountdownTimer({ targetDate, compact, onLight }: { targetDate: Date; co
     <div className="inline-flex gap-3">
       {units.map((u) => (
         <div key={u.label} className="flex flex-col items-center">
-          <span className="font-display font-black text-[28px] leading-none rounded-[2px] px-3 py-2 min-w-[52px] text-center tabular-nums bg-butter-500 text-ink-900">
+          <span className="font-display font-bold text-[28px] leading-none rounded-[10px] px-3 py-2 min-w-[52px] text-center tabular-nums bg-ink-800 border border-ink-700 text-white">
             {String(u.value).padStart(2, '0')}
           </span>
           <span className={`font-sans text-[10px] font-bold uppercase tracking-caps mt-1.5 ${onLight ? 'text-ink-900/60' : 'text-ink-300'}`}>{u.label}</span>
@@ -155,28 +210,23 @@ function CountdownTimer({ targetDate, compact, onLight }: { targetDate: Date; co
    ═══════════════════════════════════════════════════════════ */
 function Hero({ ctaRef }: { ctaRef: React.RefObject<HTMLAnchorElement | null> }) {
   return (
-    <section id="top" className="relative bg-ink-900 overflow-hidden flex flex-col min-h-screen">
-      {/* Book-pattern texture */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage: "url('/images/sps/book-pattern.svg')",
-          backgroundSize: '600px',
-          backgroundRepeat: 'repeat',
-          backgroundPosition: 'center',
-          opacity: 0.35,
-          maskImage: 'linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 100%)',
-          WebkitMaskImage: 'linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 100%)',
-        }}
-      />
+    <section id="top" className="relative overflow-hidden flex flex-col min-h-screen" style={{ background: GRAD_NAVY_HERO }}>
+      {/* Signature decoration — colorful blooms + starburst flare + vignette */}
+      <div aria-hidden="true" className="absolute inset-0 overflow-hidden pointer-events-none">
+        <Bloom color="rgba(232,69,138,0.45)" size={760} style={{ right: '-180px', top: '-260px' }} />
+        <Bloom color="rgba(246,131,31,0.40)" size={560} style={{ right: '60px', top: '40px' }} />
+        <Bloom color="rgba(47,143,255,0.42)" size={620} style={{ right: '-80px', top: '220px' }} />
+        <Bloom color="rgba(122,54,224,0.30)" size={560} style={{ left: '-220px', top: '-160px' }} />
+        <Vignette at="14% 46%" />
+        <Flare scale={0.9} style={{ right: '120px', top: '180px', width: 1, height: 1 }} />
+      </div>
 
       {/* Top announcement pill */}
       <div className="relative flex justify-center pt-5 md:pt-6 pb-1 px-3 flex-shrink-0 z-10">
-        <div className="inline-flex items-center gap-2 border border-ink-600 rounded-full px-4 md:px-5 py-1.5 bg-ink-900/60">
-          <span className="w-2 h-2 rounded-full bg-butter-500 animate-pulse flex-shrink-0" />
-          <span className="font-sans text-[10px] md:text-[11px] text-paper-200 uppercase tracking-caps whitespace-nowrap">
-            Live Bootcamp Begins Monday, June 1, 2026
+        <div className="inline-flex items-center gap-2 border border-ink-700 rounded-full px-4 md:px-5 py-1.5 bg-ink-900/50 backdrop-blur-sm">
+          <span className="w-2 h-2 rounded-full animate-pulse flex-shrink-0" style={{ background: GRAD_CHIP }} />
+          <span className="font-mono text-[10px] md:text-[11px] text-paper-200 uppercase tracking-caps whitespace-nowrap">
+            Live Bootcamp Begins Monday, July 6, 2026
           </span>
         </div>
       </div>
@@ -186,73 +236,85 @@ function Hero({ ctaRef }: { ctaRef: React.RefObject<HTMLAnchorElement | null> })
         <div className="max-w-container mx-auto w-full px-5 md:px-8 py-6 md:py-8 grid lg:grid-cols-[1.4fr_1fr] gap-10 lg:gap-14 items-center">
           {/* Left — eyebrow + headline + subhead + CTA + countdown */}
           <div className="max-w-[680px] mx-auto lg:mx-0 text-center lg:text-left">
-            <p className="font-sans font-bold uppercase tracking-caps text-butter-500 mb-4 md:mb-5" style={{ fontSize: 'clamp(11px, 0.95vw, 14px)' }}>
-              Self-Publishing Studio LIVE
+            <p className="font-mono font-bold uppercase tracking-caps text-butter-500 mb-4 md:mb-5" style={{ fontSize: 'clamp(11px, 0.95vw, 14px)' }}>
+              LinkedIn AI LIVE
             </p>
             <h1
-              className="font-display font-black uppercase text-paper-100 tracking-display mb-5"
-              style={{ fontSize: 'clamp(40px, 4.8vw, 72px)', lineHeight: 0.98 }}
+              className="font-display font-bold text-white tracking-display [text-wrap:balance] mb-5"
+              style={{ fontSize: 'clamp(38px, 4.6vw, 68px)', lineHeight: 0.99 }}
             >
-              How To Write Your<br />
-              First (Or Next)<br />
-              <span className="text-butter-500">Non-Fiction Book</span><br />
+              Position &amp; Publish<br />
+              Your Way To<br />
+              <span className="grad-text">Profit On LinkedIn</span><br />
               In 14 Days
             </h1>
             <p
               className="font-serif text-paper-200 mb-6 max-w-[560px] mx-auto lg:mx-0"
               style={{ fontSize: 'clamp(15px, 1.3vw, 19px)', lineHeight: 1.5 }}
             >
-              Write, publish, and market a book that builds your business and finally position yourself
-              as an authority in your niche.
+              Build a cutting-edge personal brand with AI so you can dominate your niche
+              on LinkedIn in 2026.
             </p>
             <a
               ref={ctaRef}
               href={DEFAULT_CTA_URL}
               onClick={() => trackCTA('Hero')}
-              className="block w-full sm:max-w-[520px] text-center mx-auto lg:mx-0 bg-butter-500 text-ink-900 font-sans font-bold uppercase tracking-[0.08em] rounded-[3px] shadow-hard hover:bg-butter-400 active:bg-butter-600 transition-colors"
+              className="btn-grad block w-full sm:max-w-[520px] text-center mx-auto lg:mx-0 text-white font-mono font-bold uppercase tracking-[0.04em] rounded-full"
               style={{ padding: '20px 28px', fontSize: 'clamp(13px, 1.1vw, 16px)' }}
             >
-              Join Self-Publishing Studio LIVE
+              Join LinkedIn AI LIVE
             </a>
-            <p className="font-sans text-[10px] uppercase tracking-caps text-ink-300 mt-5 mb-2.5">Cart closes in</p>
+            <p className="font-mono text-[10px] uppercase tracking-caps text-ink-300 mt-5 mb-2.5">Cart closes in</p>
             <CountdownTimer targetDate={CART_CLOSE_DATE} />
           </div>
 
           {/* Right — overlapping captain circles + small book-icon accent */}
           <div className="hidden md:flex justify-center lg:justify-end items-center">
-            <div className="relative w-[320px] h-[380px] lg:w-[420px] lg:h-[440px]">
-              {/* Small book-icon decoration — upper area, butter background */}
-              <div className="absolute left-[70px] top-0 z-30 lg:left-[100px]">
+            <div className="relative w-[360px] h-[420px] lg:w-[460px] lg:h-[480px]">
+              {/* Small spark chip — top accent, brand gradient */}
+              <div className="absolute left-1/2 -translate-x-1/2 top-0 z-30">
                 <div
-                  className="w-[72px] h-[72px] lg:w-[88px] lg:h-[88px] rounded-full flex items-center justify-center border-4 border-ink-900"
-                  style={{ backgroundColor: '#EFE183', boxShadow: '0 8px 16px rgba(0,0,0,0.35)' }}
+                  className="w-[60px] h-[60px] lg:w-[72px] lg:h-[72px] rounded-full flex items-center justify-center spark-pulse"
+                  style={{ background: GRAD_CHIP, boxShadow: '0 0 28px rgba(232,69,138,0.5)' }}
                 >
-                  <span className="text-[36px] lg:text-[44px] leading-none" aria-hidden="true" role="img">📖</span>
+                  <Spark className="w-[44%] h-[44%] text-white" style={{ filter: 'drop-shadow(0 0 8px rgba(180,214,255,0.6))' }} />
                 </div>
               </div>
 
-              {/* Dickie Bush — top-right, forest bg, behind */}
-              <div className="absolute right-0 top-0 z-10 flex flex-col items-center">
+              {/* Daniel Bustamante — top-left */}
+              <div className="absolute left-0 top-[64px] z-10 flex flex-col items-center w-[150px] lg:w-[170px]">
                 <div
-                  className="w-[170px] h-[170px] lg:w-[210px] lg:h-[210px] rounded-full overflow-hidden border-4 border-ink-900"
-                  style={{ backgroundColor: '#4A7C59' }}
+                  className="w-[130px] h-[130px] lg:w-[150px] lg:h-[150px] rounded-full overflow-hidden border border-white/15"
+                  style={{ backgroundColor: '#0c2152', boxShadow: '0 16px 48px rgba(2,6,18,0.5)' }}
+                >
+                  <img src="/images/daniel-circle.png" alt="Daniel Bustamante" className="w-full h-full object-cover object-top" />
+                </div>
+                <p className="font-display font-bold text-white mt-2.5 text-[15px] lg:text-[16px] tracking-caps-lg">Daniel Bustamante</p>
+                <p className="font-mono text-[9px] font-bold uppercase tracking-caps text-ink-300 mt-1 text-center">Co-Founder, Velocity</p>
+              </div>
+
+              {/* Matthew Brown — top-right */}
+              <div className="absolute right-0 top-[64px] z-10 flex flex-col items-center w-[150px] lg:w-[170px]">
+                <div
+                  className="w-[130px] h-[130px] lg:w-[150px] lg:h-[150px] rounded-full overflow-hidden border border-white/15"
+                  style={{ backgroundColor: '#0c2152', boxShadow: '0 16px 48px rgba(2,6,18,0.5)' }}
+                >
+                  <img src="/images/matthew.jpeg" alt="Matthew Brown" className="w-full h-full object-cover object-top" />
+                </div>
+                <p className="font-display font-bold text-white mt-2.5 text-[15px] lg:text-[16px] tracking-caps-lg">Matthew Brown</p>
+                <p className="font-mono text-[9px] font-bold uppercase tracking-caps text-ink-300 mt-1 text-center">Founder,<br />Tribe Digital</p>
+              </div>
+
+              {/* Dickie Bush — bottom-center, in front (lead) */}
+              <div className="absolute left-1/2 -translate-x-1/2 bottom-0 z-20 flex flex-col items-center w-[180px] lg:w-[200px]">
+                <div
+                  className="w-[170px] h-[170px] lg:w-[190px] lg:h-[190px] rounded-full overflow-hidden border border-white/15"
+                  style={{ backgroundColor: '#0c2152', boxShadow: '0 24px 64px rgba(2,6,18,0.55)' }}
                 >
                   <img src="/images/sps/dickie-circle.png" alt="Dickie Bush" className="w-full h-full object-cover object-top" />
                 </div>
-                <p className="font-display font-black uppercase text-paper-100 mt-2.5 text-[16px] lg:text-[18px] tracking-caps-lg">Dickie Bush</p>
-                <p className="font-sans text-[10px] font-bold uppercase tracking-caps text-ink-300 mt-1 text-center">Co-Founder,<br />Ship 30 for 30</p>
-              </div>
-
-              {/* Nicolas Cole — bottom-left, rust bg, in front (overlaps Dickie) */}
-              <div className="absolute left-0 bottom-0 z-20 flex flex-col items-center">
-                <div
-                  className="w-[210px] h-[210px] lg:w-[260px] lg:h-[260px] rounded-full overflow-hidden border-4 border-ink-900"
-                  style={{ backgroundColor: '#B8633A' }}
-                >
-                  <img src="/images/sps/cole-circle.png" alt="Nicolas Cole" className="w-full h-full object-cover object-top" />
-                </div>
-                <p className="font-display font-black uppercase text-paper-100 mt-2.5 text-[16px] lg:text-[18px] tracking-caps-lg">Nicolas Cole</p>
-                <p className="font-sans text-[10px] font-bold uppercase tracking-caps text-ink-300 mt-1 text-center">Co-Founder,<br />Premium Ghostwriting Academy</p>
+                <p className="font-display font-bold text-white mt-2.5 text-[15px] lg:text-[16px] tracking-caps-lg">Dickie Bush</p>
+                <p className="font-mono text-[9px] font-bold uppercase tracking-caps text-ink-300 mt-1 text-center">Co-Founder,<br />Ship 30 for 30</p>
               </div>
             </div>
           </div>
@@ -269,36 +331,47 @@ function WhyWriteABook() {
   const reasons = [
     {
       num: '01',
-      title: 'Master the craft.',
-      body: 'Writing a book is the ultimate stress-test for whether you truly understand a topic. Finish one and you finish a version of yourself.',
+      title: 'Get Promoted',
+      body: '87% of recruiters use LinkedIn to find candidates. Show up the right way and you become the obvious choice the moment new roles and opportunities open up.',
     },
     {
       num: '02',
-      title: 'Claim the authority.',
-      body: "A book is the new business card. The moment you're an author, your positioning in your niche goes up — full stop.",
+      title: 'Land Clients',
+      body: 'Industry experts build audiences and authority here. The people actively creating content are the ones who attract inbound leads and land clients on autopilot.',
     },
     {
       num: '03',
-      title: 'Build a business asset.',
-      body: "A great non-fiction book is the front door to your entire ecosystem — the asset that turns readers into subscribers, students, and clients.",
+      title: 'Build A Bigger Business',
+      body: 'Deals get made and partnerships form. With over a billion members, a strong LinkedIn presence becomes a steady source of opportunities, partners, and growth.',
     },
   ]
 
+  const blooms = ['rgba(47,143,255,0.5)', 'rgba(232,69,138,0.5)', 'rgba(24,168,107,0.5)']
+
   return (
-    <section className="bg-paper-100 py-20 md:py-28 px-5 md:px-8">
+    <section className="bg-paper py-20 md:py-28 px-5 md:px-8" style={{ color: '#15161a' }}>
       <div className="max-w-container mx-auto">
         <Eyebrow className="text-rust-500 mb-3">The opportunity</Eyebrow>
-        <Display size="m" className="text-ink-900 mb-12 max-w-[920px]">
-          Why Write A Book?<br />
-          <span className="text-rust-500">And Why Now?</span>
+        <Display size="m" className="mb-5 max-w-[920px]" style={{ color: '#15161a' }}>
+          Why LinkedIn<br />
+          <span className="grad-text">(and why now)?</span>
         </Display>
+        <p className="font-serif text-[17px] md:text-[19px] leading-[1.55] mb-12 max-w-[680px]" style={{ color: '#5c5b57' }}>
+          LinkedIn isn&rsquo;t a resume site anymore &mdash; it&rsquo;s three platforms rolled into one. And the people who
+          show up the right way are the ones who get promoted, land clients, and build bigger businesses.
+        </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {reasons.map((r) => (
-            <div key={r.num} className="bg-paper-200 border border-paper-300 rounded-[4px] p-7 md:p-8 flex flex-col">
-              <p className="font-display font-black text-[clamp(40px,4.5vw,60px)] leading-none text-rust-500 mb-4">{r.num}</p>
-              <Display size="s" as="h3" className="text-ink-900 mb-3" style={{ fontSize: 'clamp(22px, 2.4vw, 30px)' }}>{r.title}</Display>
-              <p className="font-serif text-[16px] leading-[1.55] text-ink-700">{r.body}</p>
+          {reasons.map((r, i) => (
+            <div
+              key={r.num}
+              className="relative overflow-hidden rounded-[16px] p-7 md:p-8 flex flex-col shadow-float"
+              style={{ background: GRAD_NAVY_BANNER }}
+            >
+              <Bloom color={blooms[i]} size={320} style={{ right: '-120px', top: '-120px' }} />
+              <p className="grad-text font-display font-bold text-[clamp(40px,4.5vw,60px)] leading-none mb-4 relative z-10">{r.num}</p>
+              <Display size="s" as="h3" className="text-white mb-3 relative z-10" style={{ fontSize: 'clamp(22px, 2.4vw, 30px)' }}>{r.title}</Display>
+              <p className="font-serif text-[16px] leading-[1.55] text-ink-200 relative z-10">{r.body}</p>
             </div>
           ))}
         </div>
@@ -312,23 +385,25 @@ function WhyWriteABook() {
    ═══════════════════════════════════════════════════════════ */
 function Stats() {
   const stats = [
-    { num: '6', label: 'Live Sessions', desc: '3 per week over 2 weeks. 60 min each. 3:00 PM ET.' },
-    { num: '14', label: 'Days To Finish Your Book', desc: 'From blank page to a finished, ready-to-publish manuscript.' },
-    { num: '6', label: 'AI Writing Assets', desc: 'Plug-and-play prompts and templates for every step.' },
-    { num: '3', label: 'Mini-Courses', desc: 'Manuscript OS, Self-Publishing Empire, Book Launch Blueprint.' },
-    { num: '3', label: 'Fast-Action Bonuses', desc: 'Indie vs Traditional, AI Author Autopilot, Book Monetization Mastery.' },
-    { num: '2', label: 'World-Class Instructors', desc: 'Nicolas Cole & Dickie Bush — authors and digital publishers.' },
+    { num: '6', label: 'Live Sessions', desc: '3 per week over 2 weeks. 60 minutes each, taught live.' },
+    { num: '14', label: 'Days To A LinkedIn Brand', desc: 'From overlooked profile to a positioning-and-publishing system that runs.' },
+    { num: '50+', label: 'Plug-And-Play AI Prompts', desc: 'Proven posts, hooks, CTAs, and frameworks you can use immediately.' },
+    { num: '3', label: 'Mini-Courses', desc: 'LinkedIn Positioning, Publishing, and Growth Systems.' },
+    { num: '3', label: 'Fast-Action Bonuses', desc: 'Visual Brand Templates, AI Pro Checklist, and a Ghostbase trial.' },
+    { num: '3', label: 'Expert Instructors', desc: 'Dickie Bush, Daniel Bustamante & Matthew Brown.' },
   ]
 
   return (
-    <section className="bg-ink-900 py-20 md:py-28 px-5 md:px-8 border-t border-ink-700">
-      <div className="max-w-container mx-auto">
-        {/* Centered headline with small rust accent line */}
+    <section className="relative overflow-hidden bg-ink-900 py-20 md:py-28 px-5 md:px-8">
+      <Bloom color="rgba(47,143,255,0.28)" size={640} style={{ left: '-220px', top: '40px' }} />
+      <Bloom color="rgba(232,69,138,0.24)" size={560} style={{ right: '-200px', bottom: '0px' }} />
+      <div className="relative max-w-container mx-auto">
+        {/* Centered headline with gradient accent line */}
         <div className="flex flex-col items-center mb-14">
-          <div className="w-16 h-[3px] bg-rust-500 mb-7" />
-          <Display size="m" className="text-paper-100 text-center" style={{ fontSize: 'clamp(28px, 4.2vw, 56px)' }}>
-            What Is Self-Publishing<br />
-            <span className="text-butter-500">Studio LIVE?</span>
+          <div className="w-16 h-[3px] mb-7 rounded-full" style={{ background: GRAD_CHIP }} />
+          <Display size="m" className="text-white text-center" style={{ fontSize: 'clamp(28px, 4.2vw, 56px)' }}>
+            What Is<br />
+            <span className="grad-text">LinkedIn AI LIVE?</span>
           </Display>
         </div>
 
@@ -337,9 +412,9 @@ function Stats() {
           {/* Left — product box */}
           <div className="flex justify-center">
             <img
-              src="/images/sps/product-box-sps.png"
-              alt="Self-Publishing Studio LIVE"
-              className="w-full max-w-[420px] drop-shadow-[20px_30px_40px_rgba(0,0,0,0.6)]"
+              src="/images/liai-product-box.png"
+              alt="LinkedIn AI LIVE"
+              className="w-full max-w-[420px] drop-shadow-[0_30px_50px_rgba(0,0,0,0.55)]"
               loading="lazy"
             />
           </div>
@@ -347,9 +422,9 @@ function Stats() {
           {/* Right — 2x3 stat cards */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
             {stats.map((s) => (
-              <div key={s.label} className="bg-ink-800 border border-ink-700 rounded-[4px] p-5 md:p-6 flex flex-col">
-                <p className="font-display font-black text-rust-500 leading-none mb-3" style={{ fontSize: 'clamp(36px, 3.8vw, 52px)' }}>{s.num}</p>
-                <p className="font-sans text-[12px] font-bold uppercase tracking-caps text-paper-100 mb-2 leading-tight">{s.label}</p>
+              <div key={s.label} className="bg-ink-800 border border-ink-700 rounded-[16px] p-5 md:p-6 flex flex-col transition-shadow hover:shadow-glow">
+                <p className="grad-text font-display font-bold leading-none mb-3" style={{ fontSize: 'clamp(36px, 3.8vw, 52px)' }}>{s.num}</p>
+                <p className="font-mono text-[12px] font-bold uppercase tracking-caps text-white mb-2 leading-tight">{s.label}</p>
                 <p className="font-serif text-[13px] md:text-[14px] leading-[1.5] text-ink-200">{s.desc}</p>
               </div>
             ))}
@@ -361,10 +436,10 @@ function Stats() {
           <a
             href={DEFAULT_CTA_URL}
             onClick={() => trackCTA('Stats')}
-            className="inline-block bg-butter-500 text-ink-900 font-sans font-bold uppercase tracking-[0.08em] rounded-[3px] shadow-hard hover:bg-butter-400 transition-colors"
+            className="btn-grad inline-block text-white font-mono font-bold uppercase tracking-[0.04em] rounded-full"
             style={{ padding: '20px 36px', fontSize: 'clamp(13px, 1vw, 15px)' }}
           >
-            Join Self-Publishing Studio LIVE
+            Join LinkedIn AI LIVE
           </a>
         </div>
       </div>
@@ -378,52 +453,57 @@ function Stats() {
 function IsThisForYou() {
   const questions = [
     {
-      q: "Have you been <em>'writing a book' for years</em> but never actually finished it?",
-      a: "We've all been there — notes in a Google Doc, a half-finished draft you haven't opened in months, and a vague sense the world is missing the book you're meant to write. Self-Publishing Studio LIVE gives you the system, the structure, and the deadlines to finally ship it. Most students draft their first book in weeks, not years.",
+      q: "Have you tried posting on LinkedIn before but <em>gave up</em> when you weren't seeing results?",
+      a: "Chances are, you're just making a few key mistakes (we made them too!) that are holding you back — and once you fix them, you'll have a proven system for using AI to create content that stops the scroll and helps you dominate the algorithm in a fraction of the time.",
     },
     {
-      q: "Do you have <em>the expertise</em> but not the <em>system</em> to turn it into a book?",
-      a: "You know your subject cold. What you don't know is how to organize it into chapters, how to outline a non-fiction book that actually sells, how to publish on Amazon, and how to market it after launch. This studio gives you the exact framework Cole has used across 10+ books and $500,000+ in royalties.",
+      q: "Are you posting regularly but getting <em>minimal engagement</em>, zero leads, and no inbound DMs?",
+      a: "We'll teach you the content frameworks and LinkedIn hacks that generate 10x more engagement so you can convert more of your followers into customers, fast.",
     },
     {
-      q: "Do you want a book that <em>builds your business</em> — not just sits on a shelf?",
-      a: "Most books don't make money because most authors treat the book as the product. Inside the studio you'll learn how to treat your book as the front door to your business — the asset that turns readers into newsletter subscribers, digital product buyers, and clients. A $10 book becomes a $10,000 customer.",
+      q: "Do you ever wonder, <em>“Who am I to be sharing advice on LinkedIn?”</em>",
+      a: "You're not alone! We show you how to position yourself in a way that attracts your exact ideal audience, even if you're not the #1 expert in your field.",
     },
     {
-      q: "Are you tired of writing posts and essays <em>into the void</em> with nothing to sell?",
-      a: "You've built an audience on X, LinkedIn, or Substack. A book is the asset that compounds — it positions you as the authority in your niche, on autopilot. Inside, we walk you through the exact launch strategy that's sold tens of thousands of books without a PR firm or podcast tour.",
+      q: "Do you struggle to find <em>the time</em> to post consistently on LinkedIn?",
+      a: "This course will show you how to use AI to create viral-worthy LinkedIn posts in 5–10 minutes — instead of wasting 2–3 hours manually writing every post from scratch.",
     },
     {
-      q: "Do you want to use AI to <em>accelerate</em> — without producing generic AI slop?",
-      a: "There's a difference between AI-generated slop (which Amazon flags and reputable readers hate) and AI-assisted authorship (which is the new standard). Inside Manuscript OS and AI Author Autopilot, you'll learn how to use AI as a power tool while keeping every page recognizably yours.",
+      q: "Are you intrigued by AI for content but <em>don't know where to start</em>?",
+      a: "We break AI content creation down into simple, learnable steps. You'll gain the skills and confidence to dominate LinkedIn with cutting-edge AI techniques — and you won't start from scratch: we give you a library of 50+ ready-to-use prompts you can plug in right away.",
+    },
+    {
+      q: "Are you worried your content will sound like <em>“AI slop”</em> if you use tools like ChatGPT?",
+      a: "Let us give you our proven prompts and frameworks to turn AI into your collaborative writing partner instead of a sloppy Fiverr marketing assistant.",
     },
   ]
 
   const [open, setOpen] = useState<number | null>(null)
 
   return (
-    <section className="bg-ink-900 py-20 md:py-28 px-5 md:px-8">
-      <div className="max-w-narrow mx-auto">
+    <section className="relative overflow-hidden bg-ink-900 py-20 md:py-28 px-5 md:px-8">
+      <Bloom color="rgba(122,54,224,0.22)" size={560} style={{ right: '-200px', top: '120px' }} />
+      <div className="relative max-w-narrow mx-auto">
         <div className="border-l-[6px] border-butter-500 pl-5 mb-10">
           <Eyebrow className="mb-2">Let's find out.</Eyebrow>
-          <Display size="m" className="text-paper-100">Is the bootcamp right for you?</Display>
+          <Display size="m" className="text-white">Is LinkedIn AI for you?</Display>
         </div>
 
         <div className="space-y-3">
           {questions.map((q, i) => (
             <div
               key={i}
-              className={`bg-ink-900 border rounded-[4px] px-6 py-5 cursor-pointer transition-colors ${
+              className={`bg-ink-800/50 border rounded-[14px] px-6 py-5 cursor-pointer transition-colors ${
                 open === i ? 'border-butter-500/50' : 'border-ink-700 hover:border-ink-600'
               }`}
               onClick={() => setOpen(open === i ? null : i)}
             >
               <div className="flex items-center justify-between gap-4">
                 <h3
-                  className="font-sans text-[16px] md:text-[18px] text-paper-100 font-medium [&_em]:not-italic [&_em]:text-butter-500 [&_em]:font-bold"
+                  className="font-display text-[16px] md:text-[18px] text-white font-medium [&_em]:not-italic [&_em]:grad-text [&_em]:font-bold"
                   dangerouslySetInnerHTML={{ __html: q.q }}
                 />
-                <span className={`font-display font-black text-[24px] leading-none flex-shrink-0 transition-transform duration-200 ${open === i ? 'rotate-45 text-butter-500' : 'text-ink-400'}`}>
+                <span className={`font-display font-bold text-[24px] leading-none flex-shrink-0 transition-transform duration-200 ${open === i ? 'rotate-45 text-butter-500' : 'text-ink-400'}`}>
                   +
                 </span>
               </div>
@@ -435,8 +515,8 @@ function IsThisForYou() {
         </div>
 
         <div className="mt-12 text-center">
-          <p className="font-serif text-[18px] italic text-ink-200 mb-6">If any of these sound like you&hellip; this bootcamp was made for you.</p>
-          <PrimaryCTA big track="Is This For You">Join Self-Publishing Studio LIVE</PrimaryCTA>
+          <p className="font-serif text-[18px] italic text-ink-200 mb-6">If any of these sound familiar&hellip; then LinkedIn AI was made for you.</p>
+          <PrimaryCTA big track="Is This For You">Join LinkedIn AI LIVE</PrimaryCTA>
         </div>
       </div>
     </section>
@@ -448,52 +528,56 @@ function IsThisForYou() {
    ═══════════════════════════════════════════════════════════ */
 function Curriculum() {
   const sessions = [
-    { num: 1, date: 'Mon Jun 1', title: 'The Perfect Book Title', desc: 'How to craft a title that positions you as the authority in your niche, attracts the right reader, and ranks on Amazon.', asset: 'The Perfect Book Title Generator' },
-    { num: 2, date: 'Wed Jun 3', title: 'Your Origin Story (Credibility & POV)', desc: 'Why people will read YOUR book — your earned authority, your unique angle, and the story only you can tell.', asset: 'Origin Story Interview Prompt' },
-    { num: 3, date: 'Fri Jun 5', title: 'Outlining Your Book', desc: "Reverse-engineer a bulletproof outline from your reader's questions. Walk away with a complete skeleton you can draft against.", asset: 'Book Outline Crafter' },
-    { num: 4, date: 'Mon Jun 8', title: 'Outlining Each Chapter', desc: 'The chapter-level framework Cole has used across 10+ books. Clear, valuable, and actually enjoyable to read.', asset: 'The Perfect Book Chapter Template' },
-    { num: 5, date: 'Wed Jun 10', title: 'Book Writing Fundamentals', desc: 'How to draft without getting stuck. Use AI to accelerate the heavy lifting while keeping every page recognizably yours.', asset: 'Book Chapter Autowriter' },
-    { num: 6, date: 'Fri Jun 12', title: 'Book Launch Blueprint', desc: "The evergreen marketing strategy that's generated $500K+ in royalties — without a PR firm, podcast tour, or massive budget.", asset: 'Book Launch Checklist' },
+    { num: 1, date: 'Mon Jul 6', title: 'LinkedIn Niche Positioning', desc: 'Nail the niche and angle that make the right people stop and follow — so your profile instantly signals exactly what you do and who you help.', asset: 'Niche Positioning Prompt Pack' },
+    { num: 2, date: 'Wed Jul 8', title: 'LinkedIn Profile Secrets', desc: 'Optimize every part of your profile — bio, banner, About section, and skills — so it does the selling for you and turns visitors into followers and leads.', asset: 'Profile Optimization Checklist' },
+    { num: 3, date: 'Fri Jul 10', title: 'LinkedIn Content Strategy', desc: 'Generate endless ideas and write hooks that stop the scroll using proven post formats — turning one idea into a finished post in minutes.', asset: 'Content Idea & Hook Generator' },
+    { num: 4, date: 'Mon Jul 13', title: "What's Working On LinkedIn In 2026 (And What's Not!)", desc: 'The formats, hooks, and algorithm signals driving reach right now — and the played-out tactics quietly killing your engagement.', asset: '2026 LinkedIn Playbook' },
+    { num: 5, date: 'Wed Jul 15', title: 'Grow Your List Using LinkedIn', desc: 'Move readers from your feed into your DMs, your email list, and your offers with a daily networking routine that compounds into real leads.', asset: 'Lead-Gen DM Scripts' },
+    { num: 6, date: 'Fri Jul 17', title: 'LinkedIn AI Live Hot Seat', desc: 'Bring your profile, your posts, and your questions. We workshop your specific situation live and tune your system in real time.', asset: 'Live Q&A + Feedback' },
   ]
 
   return (
-    <section id="curriculum" className="bg-paper-100 py-20 md:py-28 px-5 md:px-8">
+    <section id="curriculum" className="bg-paper py-20 md:py-28 px-5 md:px-8" style={{ color: '#15161a' }}>
       <div className="max-w-narrow mx-auto">
         <Eyebrow className="text-rust-500 mb-3 text-center">The 6 live sessions</Eyebrow>
-        <Display size="m" className="text-ink-900 text-center mb-3">
-          Here's what<br /><span className="text-rust-500">you'll build.</span>
+        <Display size="m" className="text-center mb-3" style={{ color: '#15161a' }}>
+          Here's what<br /><span className="grad-text">you'll build.</span>
         </Display>
-        <p className="font-serif text-[15px] text-ink-700 text-center mb-14">
-          All sessions 60 min &middot; M/W/F &middot; 3:00 PM ET &middot; June 1 &ndash; June 12, 2026
+        <p className="font-mono text-[12px] uppercase tracking-caps text-center mb-14" style={{ color: '#5c5b57' }}>
+          Six live sessions &middot; 60 minutes each &middot; July 6 &ndash; July 17, 2026
         </p>
 
         {/* Timeline */}
         <div className="relative">
           {/* Vertical line — desktop center */}
-          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-[2px] bg-rust-500/30 -translate-x-1/2" />
+          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-[2px] -translate-x-1/2" style={{ background: 'linear-gradient(180deg, rgba(232,69,138,0.45), rgba(47,143,255,0.45))' }} />
           {/* Vertical line — mobile left */}
-          <div className="md:hidden absolute left-5 top-0 bottom-0 w-[2px] bg-rust-500/30" />
+          <div className="md:hidden absolute left-5 top-0 bottom-0 w-[2px]" style={{ background: 'linear-gradient(180deg, rgba(232,69,138,0.45), rgba(47,143,255,0.45))' }} />
 
           <div className="space-y-10 md:space-y-14">
             {sessions.map((s) => {
               const isEven = s.num % 2 === 0
               return (
                 <div key={s.num} className="relative">
-                  {/* Numbered circle on the line */}
-                  <div className="absolute z-10 w-11 h-11 rounded-full bg-ink-900 border-2 border-butter-500 flex items-center justify-center left-0 md:left-1/2 md:-translate-x-1/2">
-                    <span className="font-display font-black text-[18px] text-butter-500 leading-none">{s.num}</span>
+                  {/* Module icon tile on the line */}
+                  <div className="absolute z-10 left-0 md:left-1/2 md:-translate-x-1/2">
+                    <img
+                      src={`/images/0${s.num}-session.png`}
+                      alt=""
+                      className="w-12 h-12 rounded-[14px] shadow-card ring-4 ring-paper"
+                    />
                   </div>
 
                   {/* Content — desktop alternates, mobile always right */}
                   <div className={`pl-16 md:pl-0 md:w-[45%] ${isEven ? 'md:ml-auto md:pl-14' : 'md:mr-auto md:pr-14 md:text-right'}`}>
-                    <span className="inline-block bg-ink-900 text-butter-500 font-sans text-[11px] font-bold uppercase tracking-caps px-3 py-1 rounded-[2px] mb-2.5">
+                    <span className="inline-block bg-ink-900 text-butter-500 font-mono text-[11px] font-bold uppercase tracking-caps px-3 py-1 rounded-full mb-2.5">
                       {s.date}
                     </span>
-                    <Display size="s" as="h3" className="text-ink-900 mb-2.5" style={{ fontSize: 'clamp(22px, 2.5vw, 30px)' }}>{s.title}</Display>
-                    <p className="font-serif text-[15px] text-ink-700 leading-[1.55] mb-3">{s.desc}</p>
-                    <div className={`inline-block bg-paper-200 border border-paper-300 rounded-[2px] px-3 py-1.5 ${isEven ? '' : 'md:ml-auto'}`}>
-                      <p className="font-sans text-[10px] font-bold uppercase tracking-caps text-rust-500 mb-0.5">Asset included</p>
-                      <p className="font-sans text-[13px] font-semibold text-ink-900">{s.asset}</p>
+                    <Display size="s" as="h3" className="mb-2.5" style={{ fontSize: 'clamp(22px, 2.5vw, 30px)', color: '#15161a' }}>{s.title}</Display>
+                    <p className="font-serif text-[15px] leading-[1.55] mb-3" style={{ color: '#5c5b57' }}>{s.desc}</p>
+                    <div className={`inline-block bg-white border border-paper-300 rounded-[10px] px-3 py-1.5 ${isEven ? '' : 'md:ml-auto'}`}>
+                      <p className="font-mono text-[10px] font-bold uppercase tracking-caps text-rust-500 mb-0.5">Asset included</p>
+                      <p className="font-display text-[13px] font-semibold" style={{ color: '#15161a' }}>{s.asset}</p>
                     </div>
                   </div>
                 </div>
@@ -504,19 +588,19 @@ function Curriculum() {
 
         {/* Closing */}
         <div className="mt-16 text-center">
-          <Display size="s" className="text-ink-900 leading-[1.05] mb-5" style={{ fontSize: 'clamp(22px, 3vw, 36px)' }}>
-            We build <span className="text-rust-500">together</span>.<br />
-            You leave with <span className="text-rust-500">a finished manuscript</span>.
+          <Display size="s" className="leading-[1.05] mb-5" style={{ fontSize: 'clamp(22px, 3vw, 36px)', color: '#15161a' }}>
+            We build <span className="grad-text">together</span>.<br />
+            You leave with <span className="grad-text">a system that runs</span>.
           </Display>
-          <p className="font-serif text-[16px] text-ink-700 mb-8">
+          <p className="font-serif text-[16px] mb-8" style={{ color: '#5c5b57' }}>
             This isn't self-paced content you buy and forget.
           </p>
           <a
             href={DEFAULT_CTA_URL}
             onClick={() => trackCTA('Curriculum')}
-            className="inline-block bg-ink-900 text-butter-500 font-sans font-bold uppercase text-[15px] tracking-[0.08em] px-9 py-5 rounded-[3px] hover:bg-ink-800 transition-colors shadow-hard"
+            className="btn-grad inline-block text-white font-mono font-bold uppercase text-[15px] tracking-[0.04em] px-9 py-5 rounded-full"
           >
-            Join Self-Publishing Studio LIVE
+            Join LinkedIn AI LIVE
           </a>
         </div>
       </div>
@@ -530,42 +614,51 @@ function Curriculum() {
 function Captains() {
   const captains = [
     {
-      name: 'Nicolas Cole',
-      role: 'Co-Founder, Ship 30 for 30 & Premium Ghostwriting Academy',
-      img: '/images/sps/cole-headshot.png',
-      bio: 'Author of 10+ non-fiction books, including The Art & Business of Online Writing. #1 most-read writer on Quora with 100M+ views. Co-founder of Ship 30 for 30 and Premium Ghostwriting Academy. Generated $500,000+ in self-published royalties on the back of his books.',
-    },
-    {
       name: 'Dickie Bush',
       role: 'Co-Founder, Ship 30 for 30',
       img: '/images/sps/dickie-headshot.png',
-      bio: 'Former Wall Street trader at BlackRock turned digital entrepreneur. Creator of Ship 30 for 30—the fastest-growing cohort-based writing program on the internet. Used email and newsletters to sell $20,000,000 in digital products.',
+      bio: 'Former Wall Street trader at BlackRock turned digital entrepreneur. Creator of Ship 30 for 30 — the fastest-growing cohort-based writing program on the internet — built on the back of writing every day on LinkedIn and X.',
+    },
+    {
+      name: 'Daniel Bustamante',
+      role: 'Co-Founder, Velocity',
+      img: '/images/daniel-headshot.png',
+      bio: "Former CMO of Ship 30 for 30 and Premium Ghostwriting Academy. Helped scale Dickie and Cole's businesses to 10,000+ students, nearly 2,000 coaching clients, and $20M+ in revenue. Now Co-Founder of Velocity, the agency turning creators' audiences into recurring email revenue.",
+    },
+    {
+      name: 'Matthew Brown',
+      role: 'Founder, Tribe Digital',
+      img: '/images/matthew.jpeg',
+      bio: 'Runs Tribe Digital, an X and LinkedIn ghostwriting agency for B2B business owners. Since 2022 he has worked with 100+ business owners and driven nearly $10M in revenue for clients with his "Dealflow System" — proven to 2x qualified leads in 90 days, in just 2 hours per month.',
     },
   ]
 
   const stats = [
-    '10+ Published Books',
-    '$500,000+ In Royalties',
-    '10,000+ Students Taught',
-    '$20M+ In Digital Products',
+    '250,000+ Followers',
+    '$20M+ In Revenue',
+    '$10M+ Driven For Clients',
+    '2,000+ Coaching Clients',
   ]
 
   return (
-    <section id="captains" className="bg-ink-900 py-20 md:py-28 px-5 md:px-8">
-      <div className="max-w-container mx-auto grid lg:grid-cols-[1.2fr_1fr] gap-12 lg:gap-16 items-start">
+    <section id="captains" className="relative overflow-hidden bg-ink-900 py-20 md:py-28 px-5 md:px-8">
+      <Bloom color="rgba(47,143,255,0.22)" size={620} style={{ right: '-200px', top: '-120px' }} />
+      <Bloom color="rgba(232,69,138,0.18)" size={520} style={{ left: '-200px', bottom: '40px' }} />
+      <div className="relative max-w-container mx-auto grid lg:grid-cols-[1.2fr_1fr] gap-12 lg:gap-16 items-start">
         {/* Left — headline + subhead + stat pills */}
         <div>
           <Eyebrow className="text-rust-500 mb-5">Meet Your Instructors</Eyebrow>
-          <Display size="m" className="text-paper-100 mb-6">
-            Built by a best-selling author<br />
-            <span className="text-butter-500">with 10+ published books.</span>
+          <Display size="m" className="text-white mb-6">
+            Taught by creators with<br />
+            <span className="grad-text">250,000+ followers.</span>
           </Display>
           <p className="font-serif text-[17px] text-ink-200 leading-[1.55] max-w-[520px] mb-8">
-            Created by the founders of Ship 30 for 30 &amp; Premium Ghostwriting Academy.
+            The team behind Ship 30 for 30, Velocity, and Tribe Digital &mdash; who&rsquo;ve built audiences
+            and real businesses on LinkedIn and X.
           </p>
           <div className="flex flex-wrap gap-2.5">
             {stats.map((s) => (
-              <span key={s} className="inline-flex items-center bg-rust-500 text-paper-100 font-sans text-[12px] font-bold uppercase tracking-caps px-4 py-2 rounded-full">
+              <span key={s} className="inline-flex items-center text-white font-mono text-[12px] font-bold uppercase tracking-caps px-4 py-2 rounded-full" style={{ background: GRAD_CHIP }}>
                 {s}
               </span>
             ))}
@@ -576,12 +669,12 @@ function Captains() {
         <div className="flex flex-col gap-5">
           {captains.map((c) => (
             <div key={c.name} className="flex gap-5 items-start">
-              <div className="w-[88px] h-[88px] md:w-[96px] md:h-[96px] rounded-[4px] overflow-hidden flex-shrink-0 border border-ink-700">
+              <div className="w-[88px] h-[88px] md:w-[96px] md:h-[96px] rounded-[16px] overflow-hidden flex-shrink-0 border border-ink-700">
                 <img src={c.img} alt={c.name} className="w-full h-full object-cover object-top" />
               </div>
               <div>
-                <p className="font-display font-black text-[20px] md:text-[22px] text-paper-100 uppercase tracking-caps-lg leading-none">{c.name}</p>
-                <p className="font-sans font-bold text-[11px] uppercase tracking-caps text-rust-500 mt-2 mb-3">{c.role}</p>
+                <p className="font-display font-bold text-[20px] md:text-[22px] text-white tracking-caps-lg leading-none">{c.name}</p>
+                <p className="font-mono font-bold text-[11px] uppercase tracking-caps text-rust-500 mt-2 mb-3">{c.role}</p>
                 <p className="font-serif text-[15px] leading-[1.55] text-ink-200">{c.bio}</p>
               </div>
             </div>
@@ -589,34 +682,6 @@ function Captains() {
         </div>
       </div>
 
-      {/* Book covers row — quiet evidence under the stat-pill claim */}
-      <div className="max-w-container mx-auto mt-12 lg:mt-16 pt-10 lg:pt-12 border-t border-ink-700">
-        <div className="grid grid-cols-4 lg:grid-cols-8 gap-3 md:gap-4">
-          {[
-            { src: '/images/sps/book_artbiz.webp', alt: 'The Art & Business of Online Writing' },
-            { src: '/images/sps/book_ghost.webp', alt: 'The Art & Business of Ghostwriting' },
-            { src: '/images/sps/book_22laws.jpg', alt: 'The 22 Laws of Online Writing' },
-            { src: '/images/sps/book_niche.jpg', alt: 'Niche Down' },
-            { src: '/images/sps/book_pillars.png', alt: 'The 8 Pillars of Premium Ghostwriting' },
-            { src: '/images/sps/book_career.webp', alt: 'Writer Career Paths' },
-            { src: '/images/sps/book_confessions.webp', alt: 'Confessions of a Teenage Gamer' },
-            { src: '/images/sps/book_snow.jpg', alt: 'Snow Leopard' },
-          ].map((c) => (
-            <div
-              key={c.src}
-              className="aspect-[2/3] overflow-hidden rounded-[2px] bg-ink-800 transition-transform duration-200 hover:-translate-y-1"
-              style={{ boxShadow: '4px 4px 0 #08111F' }}
-            >
-              <img
-                src={c.src}
-                alt={c.alt}
-                loading="lazy"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
     </section>
   )
 }
@@ -627,47 +692,49 @@ function Captains() {
 function MiniCourses() {
   const courses = [
     {
-      img: '/images/sps/product-box-manuscriptos.png',
+      img: '/images/mc1_positioning.png',
       eyebrow: 'Mini-Course #1',
-      title: 'Manuscript OS',
-      value: '$1,500 Value',
-      desc: 'The complete system for writing your non-fiction book — from crafting a title that positions you as the authority in your niche, to building a bulletproof outline, to writing chapters that are clear, valuable, and actually enjoyable to read.',
+      title: 'LinkedIn Positioning System',
+      value: '$1,200 Value',
+      desc: 'The complete system for positioning yourself so the right people know exactly what you do and why they should follow you. Nail your niche and optimize every part of your profile — bio, banner, About, and skills — so your profile does the selling for you.',
     },
     {
-      img: '/images/sps/product-box-playbook.png',
+      img: '/images/mc2_publishing.png',
       eyebrow: 'Mini-Course #2',
-      title: 'Self-Publishing Empire',
-      value: '$1,500 Value',
-      desc: 'Everything you need to format, upload, and publish your book on Amazon — including how to research the right categories, write a book description that converts, and price your book, eBook, and audiobook for maximum revenue.',
+      title: 'LinkedIn Publishing System',
+      value: '$800 Value',
+      desc: 'The system for publishing consistently without burning out or running out of ideas. Generate endless content ideas, write hooks that stop the scroll, and use proven structures to turn one idea into a finished post in minutes.',
     },
     {
-      img: '/images/sps/product-box-blueprint.png',
+      img: '/images/mc3_growth.png',
       eyebrow: 'Mini-Course #3',
-      title: 'Book Launch Blueprint',
+      title: 'LinkedIn Growth System',
       value: '$1,500 Value',
-      desc: 'The evergreen marketing strategy used to sell tens of thousands of books and generate over $500,000 in self-published royalties — without a PR firm, a podcast tour, or a massive launch budget.',
+      desc: 'The system for turning posts into an audience and an audience into leads. Learn the daily networking routine, how to engage so the right people notice you, and how to move readers into your DMs, your email list, and your offers.',
     },
   ]
 
   return (
-    <section className="bg-ink-900 py-20 md:py-28 px-5 md:px-8">
-      <div className="max-w-container mx-auto">
-        <Eyebrow className="mb-4">Video &amp; Text Curriculum</Eyebrow>
-        <Display size="m" className="text-paper-100 max-w-[920px] mb-5">
-          3 Self-Publishing<br /><span className="text-butter-500">Mini-Courses.</span>
+    <section className="relative overflow-hidden bg-ink-900 py-20 md:py-28 px-5 md:px-8">
+      <Bloom color="rgba(122,54,224,0.20)" size={560} style={{ left: '-200px', top: '60px' }} />
+      <Bloom color="rgba(246,131,31,0.18)" size={520} style={{ right: '-200px', bottom: '40px' }} />
+      <div className="relative max-w-container mx-auto">
+        <Eyebrow className="mb-4">Self-Study Curriculum</Eyebrow>
+        <Display size="m" className="text-white max-w-[920px] mb-5">
+          3 LinkedIn AI<br /><span className="grad-text">Mini-Courses.</span>
         </Display>
         <p className="font-serif text-[18px] text-ink-200 mb-14 max-w-[720px]">
-          Get access to the Self-Publishing Studio self-study course:
+          Lifetime access to the complete LinkedIn AI self-study system:
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {courses.map((c) => (
             <div key={c.title} className="flex flex-col items-center text-center">
-              <div className="bg-ink-800 border border-ink-700 rounded-[4px] p-8 mb-6 w-full flex items-center justify-center" style={{ minHeight: 280 }}>
-                <img src={c.img} alt={c.title} className="max-w-full max-h-[220px] object-contain drop-shadow-[10px_14px_20px_rgba(0,0,0,0.55)]" loading="lazy" />
+              <div className="bg-ink-800 border border-ink-700 rounded-[16px] p-8 mb-6 w-full flex items-center justify-center" style={{ minHeight: 280 }}>
+                <img src={c.img} alt={c.title} className="max-w-full max-h-[220px] object-contain drop-shadow-[0_18px_30px_rgba(0,0,0,0.55)]" loading="lazy" />
               </div>
               <Eyebrow className="mb-2">{c.eyebrow}</Eyebrow>
-              <Display size="s" as="h3" className="text-paper-100 mb-2">{c.title}</Display>
-              <p className="font-sans font-bold text-[14px] text-butter-500 tracking-caps mb-3">{c.value}</p>
+              <Display size="s" as="h3" className="text-white mb-2 md:min-h-[2.9em]">{c.title}</Display>
+              <p className="font-mono font-bold text-[14px] text-butter-500 tracking-caps mb-3">{c.value}</p>
               <p className="font-serif text-[15px] leading-[1.55] text-ink-200">{c.desc}</p>
             </div>
           ))}
@@ -684,51 +751,50 @@ function Bonuses() {
   const bonuses: { num: number; icon: string; title: string; value: string; desc: string; expires?: string }[] = [
     {
       num: 1,
-      icon: '/images/sps/bonus_1.png',
-      title: 'Indie vs. Traditional Crash Course',
-      value: '$497 Value',
-      desc: 'Should you self-publish or try to land a book deal? Most writers spend months going back and forth. This crash course breaks down both paths — the real tradeoffs, the money, the timeline, the creative control — so you can make the right decision for your book and your business, fast.',
+      icon: '/images/linkedin-visual-brand.png',
+      title: 'LinkedIn Visual Brand Templates',
+      value: '$300 Value',
+      desc: 'A complete LinkedIn visual design system — Canva branding templates (banners, post backgrounds, carousels), a CapCut video template, and a brand style guide system using Gamma — so your visuals look cohesive and professional from day one.',
     },
     {
       num: 2,
-      icon: '/images/sps/bonus_2.png',
-      title: 'AI Author Autopilot',
-      value: '$997 Value',
-      expires: 'Expires May 26, 2026',
-      desc: "Don't have time to write a book? This bonus gives you the exact AI system used to accelerate every stage of the writing process — from outlining to drafting to editing — without producing the kind of generic AI slop that kills your credibility. You do the thinking. AI handles the heavy lifting.",
+      icon: '/images/linkedin-pro-checklist.png',
+      title: 'LinkedIn AI Pro Checklist',
+      value: '$200 Value',
+      desc: "A master checklist that pulls together the most important prompts and frameworks from the entire course — in the exact order to implement them — so you don't get overwhelmed and you start seeing results fast.",
     },
     {
       num: 3,
-      icon: '/images/sps/bonus_3.png',
-      title: 'Book Monetization Mastery',
-      value: '$997 Value',
-      expires: 'Expires May 29, 2026',
-      desc: "Most books don't make money — because most authors treat the book as the product. This bonus shows you how to treat your book as the front door to your business: the entry point that turns readers into newsletter subscribers, digital product buyers, clients, and more. This is how a $10 book becomes a $10,000 customer.",
+      icon: '/images/ghostbase_logo.png',
+      title: '30-Day Free Trial To Ghostbase',
+      value: '$99 Value',
+      desc: "Ghostbase is a custom AI model trained on Nicolas Cole's library of content (well over a billion views) and a decade of writing experience. Just describe what you want to write and it generates premium content that sounds like you, built for LinkedIn.",
     },
   ]
 
   return (
-    <section id="bonuses" className="bg-ink-800 py-20 md:py-28 px-5 md:px-8">
-      <div className="max-w-container mx-auto">
+    <section id="bonuses" className="relative overflow-hidden bg-ink-800 py-20 md:py-28 px-5 md:px-8">
+      <Bloom color="rgba(47,143,255,0.18)" size={560} style={{ right: '-220px', top: '40px' }} />
+      <div className="relative max-w-container mx-auto">
         <Eyebrow className="mb-4">Free Bonuses Included</Eyebrow>
-        <Display size="m" className="text-paper-100 max-w-[1000px] mb-14">
-          Finally claim your badge<br />
-          <span className="text-butter-500">of being an author.</span>
+        <Display size="m" className="text-white max-w-[1000px] mb-14">
+          Three bonuses to<br />
+          <span className="grad-text">fast-track your results.</span>
         </Display>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {bonuses.map((b) => (
-            <div key={b.num} className="bg-ink-900 border border-ink-700 rounded-[4px] p-7 flex flex-col gap-4">
+            <div key={b.num} className="bg-ink-900 border border-ink-700 rounded-[16px] p-7 flex flex-col gap-4 transition-shadow hover:shadow-glow">
               <div className="flex items-start justify-between">
-                <span className="font-sans text-[11px] font-bold uppercase tracking-caps text-butter-500 mt-2">
+                <span className="font-mono text-[11px] font-bold uppercase tracking-caps text-butter-500 mt-2">
                   Bonus #{b.num}
                 </span>
-                <img src={b.icon} alt="" className="w-16 h-16 md:w-[72px] md:h-[72px] -mt-1 -mr-1" />
+                <img src={b.icon} alt="" className="w-16 h-16 md:w-[72px] md:h-[72px] -mt-1 -mr-1 rounded-[14px]" />
               </div>
-              <Display size="s" as="h3" className="text-paper-100">{b.title}</Display>
+              <Display size="s" as="h3" className="text-white md:min-h-[2.9em] md:flex md:items-start">{b.title}</Display>
               <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                <p className="font-sans font-bold text-[14px] text-butter-500 tracking-caps">{b.value}</p>
+                <p className="font-mono font-bold text-[14px] text-butter-500 tracking-caps">{b.value}</p>
                 {b.expires && (
-                  <p className="font-sans font-bold text-[11px] uppercase tracking-caps text-rust-400">&middot; {b.expires}</p>
+                  <p className="font-mono font-bold text-[11px] uppercase tracking-caps text-rust-400">&middot; {b.expires}</p>
                 )}
               </div>
               <p className="font-serif text-[15px] leading-[1.55] text-ink-200">{b.desc}</p>
@@ -741,52 +807,47 @@ function Bonuses() {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   AI WRITING SKOOL — Free 30-Day Trial
+   PROMPT LIBRARY — LinkedIn AI plug-and-play prompts
    ═══════════════════════════════════════════════════════════ */
 function AIWritingSkool() {
   const perks = [
-    { title: 'AI Cole', desc: 'Our custom AI model trained on all of our programs, curriculums, books, and content. Ask it anything, 24/7.', value: '$5,000+ value' },
-    { title: 'Monday Hot Seats with Cole', desc: 'Submit your questions and workshop your specific situation live.', value: '$3,000+ value' },
-    { title: 'Weekly AI/Tech Clinic with Mitch Harris', desc: 'Office hours to troubleshoot, learn new AI tools, and stay on the cutting edge.', value: '$1,500+ value' },
-    { title: 'Monthly Mini-Products, Templates, Prompts, and .Skills', desc: 'New resources dropped every month that you can download and use immediately.', value: '$1,000+ value' },
+    { title: '50+ proven AI prompts', desc: 'Create posts, carousels, infographics, and video scripts that stop the scroll — across positioning, publishing, and growth.' },
+    { title: 'The Hook Template Creator', desc: 'Reverse-engineer any viral post into your own reusable, repeatable format.' },
+    { title: '5 proven long-form formats', desc: 'Story Posts, Quick Listicles, Hot Takes, Case Studies, and X-vs-Y comparisons that consistently drive engagement.' },
+    { title: 'Refined in our business daily', desc: 'We use these exact prompts every single day — months of testing and refining, done for you.' },
   ]
 
   return (
-    <section className="bg-ink-900 py-20 md:py-28 px-5 md:px-8">
-      <div className="max-w-container mx-auto">
-        <Eyebrow className="mb-4">Included free with the bootcamp</Eyebrow>
-        <Display size="m" className="text-paper-100 mb-4">
-          30-Day Trial to<br /><span className="text-butter-500">AI Writing Skool.</span>
+    <section className="relative overflow-hidden bg-ink-900 py-20 md:py-28 px-5 md:px-8">
+      <Bloom color="rgba(122,54,224,0.20)" size={580} style={{ left: '-220px', bottom: '20px' }} />
+      <Bloom color="rgba(232,69,138,0.16)" size={460} style={{ right: '-180px', top: '40px' }} />
+      <div className="relative max-w-container mx-auto">
+        <Eyebrow className="mb-4">Included with the bootcamp</Eyebrow>
+        <Display size="m" className="text-white mb-4">
+          The LinkedIn AI<br /><span className="grad-text">Prompt Library.</span>
         </Display>
         <p className="font-serif text-[18px] text-ink-200 mb-12 max-w-[760px]">
-          AI Writing Skool is THE community for writers and creators building in the new AI economy &mdash;
-          and you get full access for 30 days so you can get feedback on your book, trade ideas, and stay sharp as you build.
+          Every single prompt we use to create viral LinkedIn content &mdash; refined and tested over months,
+          and used in our business every single day.{' '}
+          <span className="font-mono text-[15px] text-butter-500">$500 value, included free.</span>
         </p>
 
-        <div className="flex flex-col md:flex-row gap-10 md:gap-12 items-start">
-          <div className="w-full md:w-[45%] flex-shrink-0">
-            <img src="/images/AIWS.png" alt="AI Writing Skool" className="w-full object-contain rounded-[4px] border border-ink-700" loading="lazy" />
+        <div className="flex flex-col md:flex-row gap-10 md:gap-14 items-center">
+          <div className="w-full md:w-[42%] flex-shrink-0 flex justify-center">
+            <img src="/images/prompt_library.png" alt="LinkedIn AI Prompt Library" className="w-full max-w-[340px] object-contain drop-shadow-[0_30px_50px_rgba(0,0,0,0.55)]" loading="lazy" />
           </div>
           <div className="flex-1">
-            <Eyebrow className="mb-5">Inside, you'll unlock:</Eyebrow>
+            <Eyebrow className="mb-5">Inside, you'll get:</Eyebrow>
             <div className="space-y-5">
               {perks.map((p) => (
                 <div key={p.title} className="flex gap-3">
-                  <span className="text-butter-500 mt-1 flex-shrink-0">→</span>
+                  <Spark className="w-4 h-4 mt-1 flex-shrink-0 text-accent-pink" />
                   <div>
-                    <span className="font-sans text-[15px] font-bold text-paper-100">{p.title}:</span>
+                    <span className="font-display text-[15px] font-bold text-white">{p.title}:</span>
                     <span className="font-serif text-[15px] text-ink-200"> {p.desc}</span>
-                    <span className="font-sans text-[13px] text-butter-500 font-semibold"> ({p.value})</span>
                   </div>
                 </div>
               ))}
-              <div className="flex gap-3">
-                <span className="text-butter-500 mt-1 flex-shrink-0">→</span>
-                <div>
-                  <span className="font-sans text-[15px] font-bold text-paper-100">Daily Q&amp;A Channel:</span>
-                  <span className="font-serif text-[15px] text-ink-200"> Never get stuck. Get answers from the community and our team every single day.</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -801,66 +862,65 @@ function AIWritingSkool() {
 function Pricing() {
   const items = [
     { name: '6 x 60-Minute Live Sessions', price: '$3,600' },
-    { name: 'A 2-Week Build & Launch Schedule', price: '$1,000' },
     { name: 'The Bootcamp Session Guide', price: '$600' },
-    { name: '6 Done-For-You Prompts & Templates', price: '$600' },
-    { name: 'Mini-Course #1: Manuscript OS', price: '$1,500' },
-    { name: 'Mini-Course #2: Self-Publishing Empire', price: '$1,500' },
-    { name: 'Mini-Course #3: Book Launch Blueprint', price: '$1,500' },
+    { name: 'LinkedIn AI Plug-And-Play Prompt Library', price: '$500' },
+    { name: 'Mini-Course #1: LinkedIn Positioning System', price: '$1,200' },
+    { name: 'Mini-Course #2: LinkedIn Publishing System', price: '$800' },
+    { name: 'Mini-Course #3: LinkedIn Growth System', price: '$1,500' },
     { name: 'Session Replays', price: '$300' },
     { name: 'Lifetime Access to the Curriculum', price: 'Priceless' },
-    { name: 'BONUS: Indie vs. Traditional Crash Course', price: '$497' },
-    { name: 'BONUS: AI Author Autopilot', price: '$997' },
-    { name: 'BONUS: Book Monetization Mastery', price: '$997' },
-    { name: '30-Day AI Writing Skool Trial', price: '$99' },
+    { name: 'BONUS: LinkedIn Visual Brand Templates', price: '$300' },
+    { name: 'BONUS: LinkedIn AI Pro Checklist', price: '$200' },
+    { name: 'BONUS: 30-Day Ghostbase Trial', price: '$99' },
   ]
 
   return (
-    <section id="pricing" className="bg-ink-800 py-24 md:py-32 px-5 md:px-8">
-      <div className="max-w-narrow mx-auto text-center">
+    <section id="pricing" className="relative overflow-hidden bg-ink-800 py-20 md:py-28 px-5 md:px-8">
+      <Bloom color="rgba(232,69,138,0.20)" size={620} style={{ left: '-200px', top: '120px' }} />
+      <Bloom color="rgba(246,131,31,0.18)" size={520} style={{ right: '-200px', bottom: '60px' }} />
+      <div className="relative max-w-narrow mx-auto text-center">
         <Eyebrow className="mb-4">Join The Bootcamp</Eyebrow>
         <h2
-          className="font-display font-black uppercase text-paper-100 tracking-display mb-12"
+          className="font-display font-bold text-white tracking-display [text-wrap:balance] mb-12"
           style={{ fontSize: 'clamp(28px, 4.2vw, 56px)', lineHeight: 1.0 }}
         >
-          Want To Write Your<br />
-          First (Or Next)<br />
-          <span className="text-butter-500">Non-Fiction Book</span><br />
+          Position &amp; Publish<br />
+          Your Way To<br />
+          <span className="grad-text">Profit On LinkedIn</span><br />
           In 14 Days?
         </h2>
 
-        <div className="max-w-[560px] mx-auto rounded-[4px] overflow-hidden shadow-hard-lg">
+        <div className="max-w-[560px] mx-auto rounded-[20px] overflow-hidden shadow-float">
           {/* Top: value stack */}
           <div className="bg-ink-900 border border-ink-700 border-b-0 p-7 md:p-9 text-left">
             {items.map((item, i) => (
               <div key={i} className="flex justify-between items-center py-2.5 border-b border-ink-700 last:border-b-0 gap-4">
-                <span className="font-sans text-[14px] text-paper-200">{item.name}</span>
-                <span className="font-sans text-[14px] font-semibold text-ink-300 flex-shrink-0">{item.price}</span>
+                <span className="font-display text-[14px] text-paper-200">{item.name}</span>
+                <span className="font-mono text-[13px] font-bold text-ink-300 flex-shrink-0 tabular-nums">{item.price}</span>
               </div>
             ))}
             <div className="flex justify-between items-center pt-4 mt-3 border-t border-ink-600">
-              <span className="font-sans text-[14px] font-bold text-paper-100">Total Value</span>
-              <span className="font-display font-black text-[24px] text-paper-100 line-through decoration-rust-500 decoration-2">$13,190</span>
+              <span className="font-display text-[14px] font-bold text-white">Total Value</span>
+              <span className="font-display font-bold text-[24px] text-white line-through decoration-rust-500 decoration-2">$9,099</span>
             </div>
           </div>
 
-          {/* Bottom: price reveal — butter card */}
-          <div className="bg-butter-500 p-7 md:p-9 text-center">
-            <p className="font-sans text-[11px] font-bold uppercase tracking-caps text-ink-900/60">Your Price</p>
-            <p className="font-display font-black text-[clamp(64px,10vw,96px)] text-ink-900 leading-none mt-2">$800</p>
+          {/* Bottom: price reveal — warm paper card floating on navy */}
+          <div className="relative overflow-hidden p-7 md:p-9 text-center" style={{ background: '#e7e5df' }}>
+            <p className="font-mono text-[11px] font-bold uppercase tracking-caps" style={{ color: '#5c5b57' }}>Your Price</p>
+            <p className="grad-text font-display font-bold text-[clamp(64px,10vw,96px)] leading-none mt-2">$800</p>
             <a
               href={DEFAULT_CTA_URL}
               onClick={() => trackCTA('Pricing')}
-              className="inline-block bg-ink-900 text-butter-500 font-sans font-bold uppercase text-[15px] tracking-[0.08em] px-9 py-5 rounded-[3px] mt-6 hover:bg-ink-800 transition-colors"
-              style={{ boxShadow: '8px 8px 0 rgba(8,17,31,0.35)' }}
+              className="btn-grad inline-block text-white font-mono font-bold uppercase text-[15px] tracking-[0.04em] px-9 py-5 rounded-full mt-6"
             >
-              Join Self-Publishing Studio LIVE &rarr;
+              Join LinkedIn AI LIVE &rarr;
             </a>
-            <p className="font-sans text-[12px] text-ink-900/70 mt-4">7-day money-back guarantee</p>
+            <p className="font-mono text-[12px] mt-4" style={{ color: '#5c5b57' }}>7-day money-back guarantee</p>
           </div>
         </div>
 
-        <p className="font-sans text-[11px] uppercase tracking-caps text-ink-300 mt-10 mb-3">Enrollment closes in</p>
+        <p className="font-mono text-[11px] uppercase tracking-caps text-ink-300 mt-10 mb-3">Enrollment closes in</p>
         <div className="inline-block"><CountdownTimer targetDate={CART_CLOSE_DATE} /></div>
       </div>
     </section>
@@ -868,166 +928,56 @@ function Pricing() {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   PATTERN BOOK COVER — flat front with book-pattern texture,
-   inline render of the "pattern" variant from the design bundle.
-   ═══════════════════════════════════════════════════════════ */
-function PatternBookCover({
-  eyebrow = 'A NON-FICTION FIELD GUIDE',
-  title = 'YOUR TITLE HERE',
-  subtitle = "A field guide to writing and publishing the non-fiction book you've been meaning to write.",
-  author = 'YOUR NAME HERE',
-}: {
-  eyebrow?: string
-  title?: string
-  subtitle?: string
-  author?: string
-}) {
-  const fg = '#EFE183' // butter-500
-  const bg = '#0C1929' // ink-900
-  return (
-    <div
-      className="relative"
-      style={{
-        width: 'min(320px, 100%)',
-        aspectRatio: '320 / 460',
-        containerType: 'inline-size',
-        boxShadow: '14px 14px 0 #0C1929, 0 30px 50px rgba(12,25,41,0.25)',
-      }}
-    >
-      {/* Cover face */}
-      <div
-        className="relative w-full h-full overflow-hidden"
-        style={{
-          background: bg,
-          backgroundImage:
-            'url("/images/sps/book-pattern.svg"), radial-gradient(120% 80% at 30% 20%, rgba(255,255,255,0.04), transparent 60%)',
-          backgroundSize: '56.25cqw auto, auto',
-          backgroundBlendMode: 'screen, normal',
-        }}
-      >
-        {/* Inner debossed frame */}
-        <div
-          className="absolute pointer-events-none"
-          style={{ inset: '3.75cqw', border: '1px solid rgba(239,225,131,0.28)' }}
-        />
-        {/* Content stack */}
-        <div className="absolute flex flex-col" style={{ inset: '6.875cqw' }}>
-          {/* Eyebrow */}
-          <div
-            className="font-sans font-bold uppercase"
-            style={{ fontSize: '3.125cqw', letterSpacing: '0.18em', color: fg, opacity: 0.85 }}
-          >
-            {eyebrow}
-          </div>
-          {/* Title + subtitle */}
-          <div className="flex-1 flex flex-col justify-center min-h-0">
-            <div
-              className="font-display font-black uppercase"
-              style={{
-                fontSize: '18.75cqw',
-                lineHeight: 0.86,
-                letterSpacing: '-0.01em',
-                color: fg,
-                textWrap: 'balance' as React.CSSProperties['textWrap'],
-              }}
-            >
-              {title}
-            </div>
-            {subtitle && (
-              <div
-                className="font-sans"
-                style={{
-                  marginTop: '4.375cqw',
-                  fontSize: '4.0625cqw',
-                  lineHeight: 1.35,
-                  color: fg,
-                  opacity: 0.78,
-                  maxWidth: '92%',
-                  fontWeight: 500,
-                }}
-              >
-                {subtitle}
-              </div>
-            )}
-          </div>
-          {/* Rule + author */}
-          <div>
-            <div style={{ height: '0.625cqw', width: '13.75cqw', background: fg, opacity: 0.6, marginBottom: '3.75cqw' }} />
-            <div
-              className="font-sans font-bold uppercase"
-              style={{ fontSize: '3.4375cqw', letterSpacing: '0.22em', color: fg }}
-            >
-              {author}
-            </div>
-          </div>
-        </div>
-        {/* Sheen overlay */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              'linear-gradient(110deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 28%, rgba(0,0,0,0.10) 80%, rgba(0,0,0,0.22) 100%)',
-            opacity: 0.9,
-          }}
-        />
-      </div>
-      {/* Spine peek on the left */}
-      <div
-        aria-hidden="true"
-        className="absolute top-0"
-        style={{
-          left: '-2.5cqw',
-          width: '2.5cqw',
-          height: '100%',
-          background: 'linear-gradient(90deg, rgba(0,0,0,0.5), #08111F)',
-        }}
-      />
-    </div>
-  )
-}
-
-/* ═══════════════════════════════════════════════════════════
-   GUARANTEE + FINAL CTA — Butter card
+   GUARANTEE + FINAL CTA — Navy gradient card
    ═══════════════════════════════════════════════════════════ */
 function GuaranteeFinalCTA() {
   return (
     <section id="final-cta" className="bg-ink-900 py-20 md:py-28 px-5 md:px-8">
       <div className="max-w-container mx-auto">
-        <div className="bg-butter-500 text-ink-900 p-10 md:p-14 rounded-[4px] shadow-hard-lg">
-          <div className="grid lg:grid-cols-[1.05fr_1fr] gap-12 lg:gap-14 items-center">
+        <div className="relative overflow-hidden text-white p-10 md:p-14 rounded-[20px] shadow-float" style={{ background: GRAD_NAVY_BANNER }}>
+          {/* Signature decoration */}
+          <Bloom color="rgba(232,69,138,0.42)" size={620} style={{ right: '-160px', top: '-200px' }} />
+          <Bloom color="rgba(246,131,31,0.34)" size={460} style={{ right: '120px', top: '40px' }} />
+          <Bloom color="rgba(47,143,255,0.34)" size={520} style={{ left: '-180px', bottom: '-160px' }} />
+          <Flare scale={0.7} style={{ right: '220px', top: '180px', width: 1, height: 1 }} />
+          <div className="relative grid lg:grid-cols-[1.05fr_1fr] gap-12 lg:gap-14 items-center">
             {/* Copy column */}
             <div>
-              <p className="font-sans text-[12px] font-bold uppercase tracking-caps text-ink-900 mb-6">
-                Stop overthinking &middot; finally write the book
+              <p className="font-mono text-[12px] font-bold uppercase tracking-caps text-butter-500 mb-6">
+                Stop scrolling &middot; start publishing
               </p>
-              <Display size="l" className="text-ink-900 mb-6">
-                Your book.<br />This year.
+              <Display size="m" className="text-white mb-6">
+                Finally, Start<br />Growing On<br /><span className="grad-text">LinkedIn!</span>
               </Display>
-              <p className="font-serif text-[20px] leading-[1.55] text-ink-900 max-w-[560px] mb-9">
-                Six live sessions, three mini-courses, six AI-powered writing assets, and three fast-action bonuses.
-                Lifetime access. 7-day no-questions-asked refund if you show up to Session 1 and decide this isn't what you expected.
+              <p className="font-serif text-[20px] leading-[1.55] text-ink-200 max-w-[560px] mb-9">
+                Six live sessions, three mini-courses, a 50+ prompt library, and three fast-action bonuses.
+                Lifetime access, and a 7-day no-questions-asked refund if you show up to Session 1 and decide it isn't what you expected.
               </p>
               <a
                 href={DEFAULT_CTA_URL}
                 onClick={() => trackCTA('Final')}
-                className="inline-block bg-ink-900 text-butter-500 font-sans font-bold uppercase text-[17px] tracking-[0.08em] px-10 py-5 rounded-[3px] hover:bg-ink-800 transition-colors"
-                style={{ boxShadow: '8px 8px 0 rgba(8,17,31,0.35)' }}
+                className="btn-grad inline-block text-white font-mono font-bold uppercase text-[17px] tracking-[0.04em] px-10 py-5 rounded-full"
               >
-                Join Self-Publishing Studio LIVE
+                Join LinkedIn AI LIVE
               </a>
-              <p className="font-sans text-[14px] text-ink-900/70 mt-5">
-                Live bootcamp begins Monday, June 1, 2026.
+              <p className="font-mono text-[14px] text-ink-300 mt-5">
+                Live bootcamp begins Monday, July 6, 2026.
               </p>
             </div>
 
-            {/* Book cover column */}
+            {/* Product box column */}
             <div className="flex flex-col items-center lg:items-end gap-4 pl-2 pr-4 lg:pr-8">
-              <PatternBookCover />
+              <img
+                src="/images/liai-product-box.png"
+                alt="LinkedIn AI LIVE"
+                className="w-full max-w-[300px] drop-shadow-[0_30px_50px_rgba(0,0,0,0.55)]"
+                loading="lazy"
+              />
               <p
-                className="font-sans font-bold uppercase text-ink-900/55 whitespace-nowrap"
+                className="font-mono font-bold uppercase text-ink-300 whitespace-nowrap"
                 style={{ fontSize: 12, letterSpacing: '0.22em' }}
               >
-                &mdash; Could be yours &mdash;
+                &mdash; Everything included &mdash;
               </p>
             </div>
           </div>
@@ -1042,26 +992,26 @@ function GuaranteeFinalCTA() {
    ═══════════════════════════════════════════════════════════ */
 function FAQ() {
   const faqs = [
-    { q: "How much time do I need per week?", a: "Three 60-minute live sessions per week (Monday, Wednesday, Friday at 3:00 PM ET), plus 1–2 hours to implement between sessions. Every asset is built during the session itself, so implementation time is minimal." },
-    { q: "What if I can't attend live?", a: "Every session is recorded and the replay goes up within hours. You'll also get the full slide deck. Showing up live is where the real value is — real-time Q&A and feedback can't be replicated in a replay." },
-    { q: "I don't have time to write a book. Will this work for me?", a: "This is the #1 objection we hear. Most people think writing a book takes years. Our AI-accelerated system shows you how to do it in weeks — not by producing generic AI slop, but by using AI to handle the heavy lifting while you do the thinking. You get a finished manuscript without giving up your evenings or weekends." },
-    { q: "I'm not a great writer. Can I still write a book?", a: "You don't need to be a great writer. You need to be a clear thinker. The frameworks inside Manuscript OS show you how to organize your ideas — and the AI tools handle the prose. We've seen first-time authors finish manuscripts they're genuinely proud of, in their own voice." },
-    { q: "Won't AI-written books get penalized by Amazon?", a: "Not the way we teach it. There's a difference between AI-generated slop (which Amazon flags and reputable authors avoid) and AI-assisted authorship (which is the new standard). We walk you through KDP's disclosure rules and show you how to produce work that's recognizably yours, with AI as a power tool — not the author." },
-    { q: "Will my book actually make money?", a: "Most self-published books don't — because most authors treat the book as the product. We teach you to treat your book as the front door to your business. A $10 book that generates a $500/month client is worth $6,000/year, not $4 in royalties. The book is the funnel. The Book Monetization Mastery bonus covers this in detail." },
-    { q: "I've tried writing a book before and didn't finish. How is this different?", a: "Our system has built-in completion mechanics: live deadlines, milestones, accountability checkpoints, and a peer community. The bootcamp structure forces you to ship. Most graduates finish their first draft within weeks." },
-    { q: "How long do I have access?", a: "Lifetime. Every replay, slide deck, template, prompt, and bonus is yours forever. Including every update we ship to the curriculum." },
-    { q: "How is this different from Ship 30 for 30?", a: "Ship 30 teaches you to write online — daily essays, 250 words at a time. Self-Publishing Studio LIVE teaches you to assemble that practice into a full non-fiction book and turn it into a business asset." },
+    { q: "How much time do I need per week?", a: "Three 60-minute live sessions per week (Monday, Wednesday, Friday), plus an hour or two to implement between sessions. With the AI prompt library, you can create a viral-worthy LinkedIn post in 5–10 minutes instead of 2–3 hours from scratch." },
+    { q: "What if I can't attend live?", a: "Every session is recorded and the replay goes up within hours — and it's yours for life. Showing up live is where the real value is (real-time Q&A and feedback in the Hot Seat), but you'll never fall behind." },
+    { q: "I barely have a LinkedIn following. Will this work for me?", a: "Yes. This works for creators at any stage. We show you how to position yourself to attract your exact ideal audience — even if you're not the #1 expert in your field — and how to grow from wherever you are right now." },
+    { q: "I don't have time to post consistently. How will I keep up?", a: "That's exactly what the AI prompt library solves. You'll generate endless ideas and turn one idea into a finished, scroll-stopping post in 5–10 minutes — so a consistent publishing cadence finally becomes realistic." },
+    { q: "Won't AI-written posts sound like 'AI slop'?", a: "Not the way we teach it. Our prompts and frameworks turn AI into your collaborative writing partner — content that sounds like you, not a generic Fiverr assistant. You do the thinking; AI handles the heavy lifting." },
+    { q: "Is this only useful if I'm selling something?", a: "No. Whether you want clients, a new role, partnerships, or simply authority in your niche, the system works the same way: position, publish, and grow so the right opportunities come to you on autopilot." },
+    { q: "What is Ghostbase?", a: "Ghostbase is a custom AI model trained on Nicolas Cole's library of content (well over a billion views) and a decade of writing experience. You get a 30-day free trial — just describe what you want to write and it generates premium content that sounds like you." },
+    { q: "How long do I have access?", a: "Lifetime. Every replay, mini-course, prompt, template, and bonus is yours forever — including every update we ship to the curriculum." },
     { q: "Is there a guarantee?", a: "Yes. Show up to Session 1, do the work, and if it isn't what you expected — email us within 7 days and we'll refund you in full. No questions asked." },
   ]
 
   const [open, setOpen] = useState<number | null>(0)
 
   return (
-    <section id="faq" className="bg-ink-900 py-20 md:py-28 px-5 md:px-8">
-      <div className="max-w-narrow mx-auto">
+    <section id="faq" className="relative overflow-hidden bg-ink-900 py-20 md:py-28 px-5 md:px-8">
+      <Bloom color="rgba(47,143,255,0.16)" size={520} style={{ left: '-220px', top: '80px' }} />
+      <div className="relative max-w-narrow mx-auto">
         <Eyebrow className="mb-4">Frequently asked questions</Eyebrow>
-        <Display size="m" className="text-butter-500 mb-12">Still wondering?</Display>
-        <div className="flex flex-col gap-[2px] bg-ink-700">
+        <Display size="m" className="mb-12"><span className="grad-text">Still wondering?</span></Display>
+        <div className="flex flex-col gap-[2px] bg-ink-700 rounded-[16px] overflow-hidden">
           {faqs.map((faq, i) => {
             const isOpen = open === i
             return (
@@ -1071,11 +1021,11 @@ function FAQ() {
                     if (!isOpen) Fathom.trackEvent(`FAQ: ${faq.q}`)
                     setOpen(isOpen ? null : i)
                   }}
-                  className="w-full bg-transparent border-none cursor-pointer px-6 md:px-7 py-5 md:py-6 flex items-center justify-between text-left text-paper-100 font-sans text-[16px] md:text-[18px] font-semibold leading-tight hover:text-butter-500 transition-colors"
+                  className="w-full bg-transparent border-none cursor-pointer px-6 md:px-7 py-5 md:py-6 flex items-center justify-between text-left text-white font-display text-[16px] md:text-[18px] font-semibold leading-tight hover:text-butter-500 transition-colors"
                 >
                   <span className="pr-4">{faq.q}</span>
                   <span
-                    className="font-display font-black text-[28px] text-butter-500 leading-none flex-shrink-0 transition-transform duration-200"
+                    className="font-display font-bold text-[28px] text-butter-500 leading-none flex-shrink-0 transition-transform duration-200"
                     style={{ transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)' }}
                   >
                     +
@@ -1102,8 +1052,12 @@ function Footer() {
   return (
     <footer className="bg-ink-950 border-t border-ink-700 px-5 md:px-8 py-10">
       <div className="max-w-container mx-auto text-center">
-        <img src="/images/sps/wordmark-inline.svg" alt="Self-Publishing Studio" className="h-7 mx-auto mb-4 opacity-70" />
-        <p className="font-sans text-[12px] text-ink-500">
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <Spark className="w-3.5 h-3.5 text-accent-pink spark-pulse" />
+          <span className="grad-text font-display font-bold text-[18px] tracking-caps-lg">LinkedIn AI LIVE</span>
+          <Spark className="w-3.5 h-3.5 text-accent-blue spark-pulse" />
+        </div>
+        <p className="font-mono text-[12px] tracking-caps text-ink-500">
           &copy; 2026 Ship 30 for 30, LLC. All rights reserved.
         </p>
       </div>
@@ -1135,9 +1089,11 @@ function StickyCtaBar({ heroCtaRef }: { heroCtaRef: React.RefObject<HTMLAnchorEl
       }`}
     >
       <div className="max-w-container mx-auto px-5 h-[64px] flex items-center justify-between gap-4">
-        <span className="hidden md:flex items-center gap-3 font-display font-black text-[16px] text-butter-500 uppercase tracking-caps-lg">
-          <img src="/images/sps/bookshelf-mark.svg" alt="" className="w-6 h-6" />
-          Self-Publishing Studio LIVE
+        <span className="hidden md:flex items-center gap-3 font-display font-bold text-[16px] tracking-caps-lg">
+          <span className="w-7 h-7 rounded-[9px] flex items-center justify-center flex-shrink-0" style={{ background: GRAD_CHIP }}>
+            <Spark className="w-3.5 h-3.5 text-white" />
+          </span>
+          <span className="grad-text">LinkedIn AI LIVE</span>
         </span>
         <div className="hidden md:block">
           <CountdownTimer targetDate={CART_CLOSE_DATE} compact />
@@ -1145,7 +1101,7 @@ function StickyCtaBar({ heroCtaRef }: { heroCtaRef: React.RefObject<HTMLAnchorEl
         <a
           href={DEFAULT_CTA_URL}
           onClick={() => trackCTA('Sticky Bar')}
-          className="bg-butter-500 text-ink-900 font-sans font-bold uppercase text-[13px] tracking-caps px-6 py-2.5 rounded-[3px] hover:bg-butter-400 transition-colors mx-auto md:mx-0"
+          className="btn-grad text-white font-mono font-bold uppercase text-[13px] tracking-caps px-6 py-2.5 rounded-full mx-auto md:mx-0"
         >
           Join Now
         </a>
