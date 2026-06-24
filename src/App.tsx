@@ -790,7 +790,7 @@ function Bonuses() {
                 </span>
                 <img src={b.icon} alt="" className="w-16 h-16 md:w-[72px] md:h-[72px] -mt-1 -mr-1 rounded-[14px]" />
               </div>
-              <Display size="s" as="h3" className="text-white">{b.title}</Display>
+              <Display size="s" as="h3" className="text-white md:min-h-[2.9em] md:flex md:items-start">{b.title}</Display>
               <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                 <p className="font-mono font-bold text-[14px] text-butter-500 tracking-caps">{b.value}</p>
                 {b.expires && (
@@ -946,8 +946,8 @@ function GuaranteeFinalCTA() {
               <p className="font-mono text-[12px] font-bold uppercase tracking-caps text-butter-500 mb-6">
                 Stop scrolling &middot; start publishing
               </p>
-              <Display size="l" className="text-white mb-6">
-                Your brand.<br /><span className="grad-text">This year.</span>
+              <Display size="m" className="text-white mb-6">
+                Finally, Start<br />Growing On<br /><span className="grad-text">LinkedIn!</span>
               </Display>
               <p className="font-serif text-[20px] leading-[1.55] text-ink-200 max-w-[560px] mb-9">
                 Six live sessions, three mini-courses, a 50+ prompt library, and three fast-action bonuses.
