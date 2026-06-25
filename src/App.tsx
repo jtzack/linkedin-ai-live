@@ -809,7 +809,7 @@ function Bonuses() {
 /* ═══════════════════════════════════════════════════════════
    PROMPT LIBRARY — LinkedIn AI plug-and-play prompts
    ═══════════════════════════════════════════════════════════ */
-function AIWritingSkool() {
+function PromptLibrary() {
   const perks = [
     { title: '50+ proven AI prompts', desc: 'Create posts, carousels, infographics, and video scripts that stop the scroll — across positioning, publishing, and growth.' },
     { title: 'The Hook Template Creator', desc: 'Reverse-engineer any viral post into your own reusable, repeatable format.' },
@@ -848,6 +848,61 @@ function AIWritingSkool() {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════
+   AI WRITING SKOOL — Free 30-Day Trial
+   ═══════════════════════════════════════════════════════════ */
+function AIWritingSkool() {
+  const perks = [
+    { title: 'AI Cole', desc: 'Our custom AI model trained on all of our programs, curriculums, books, and content. Ask it anything, 24/7.', value: '$5,000+ value' },
+    { title: 'Monday Hot Seats with Cole', desc: 'Submit your questions and workshop your specific situation live.', value: '$3,000+ value' },
+    { title: 'Weekly AI/Tech Clinic with Mitch Harris', desc: 'Office hours to troubleshoot, learn new AI tools, and stay on the cutting edge.', value: '$1,500+ value' },
+    { title: 'Monthly Mini-Products, Templates, Prompts, and .Skills', desc: 'New resources dropped every month that you can download and use immediately.', value: '$1,000+ value' },
+  ]
+
+  return (
+    <section className="bg-ink-900 py-20 md:py-28 px-5 md:px-8">
+      <div className="max-w-container mx-auto">
+        <Eyebrow className="mb-4">Included free with the bootcamp</Eyebrow>
+        <Display size="m" className="text-paper-100 mb-4">
+          30-Day Trial to<br /><span className="text-butter-500">AI Writing Skool.</span>
+        </Display>
+        <p className="font-serif text-[18px] text-ink-200 mb-12 max-w-[760px]">
+          AI Writing Skool is THE community for writers and creators building in the new AI economy &mdash;
+          and you get full access for 30 days so you can get feedback on your book, trade ideas, and stay sharp as you build.
+        </p>
+
+        <div className="flex flex-col md:flex-row gap-10 md:gap-12 items-start">
+          <div className="w-full md:w-[45%] flex-shrink-0">
+            <img src="/images/AIWS.png" alt="AI Writing Skool" className="w-full object-contain rounded-[4px] border border-ink-700" loading="lazy" />
+          </div>
+          <div className="flex-1">
+            <Eyebrow className="mb-5">Inside, you'll unlock:</Eyebrow>
+            <div className="space-y-5">
+              {perks.map((p) => (
+                <div key={p.title} className="flex gap-3">
+                  <span className="text-butter-500 mt-1 flex-shrink-0">→</span>
+                  <div>
+                    <span className="font-sans text-[15px] font-bold text-paper-100">{p.title}:</span>
+                    <span className="font-serif text-[15px] text-ink-200"> {p.desc}</span>
+                    <span className="font-sans text-[13px] text-butter-500 font-semibold"> ({p.value})</span>
+                  </div>
+                </div>
+              ))}
+              <div className="flex gap-3">
+                <span className="text-butter-500 mt-1 flex-shrink-0">→</span>
+                <div>
+                  <span className="font-sans text-[15px] font-bold text-paper-100">Daily Q&amp;A Channel:</span>
+                  <span className="font-serif text-[15px] text-ink-200"> Never get stuck. Get answers from the community and our team every single day.</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1175,6 +1230,7 @@ export default function App() {
       <FadeIn><Curriculum /></FadeIn>
       <FadeIn><MiniCourses /></FadeIn>
       <FadeIn><Bonuses /></FadeIn>
+      <FadeIn><PromptLibrary /></FadeIn>
       <FadeIn><AIWritingSkool /></FadeIn>
       <FadeIn><Pricing /></FadeIn>
       <FadeIn><GuaranteeFinalCTA /></FadeIn>
